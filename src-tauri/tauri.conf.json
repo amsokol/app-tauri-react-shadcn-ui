@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Tauri + React",
+        "title": "Tauri + React + Typescript + Shadcn + Tailwind CSS",
         "width": 1024,
         "height": 768
       }

@@ -1,0 +1,2 @@
+# Tailwind v4 + shadcn entry (verbatim from vite-app); standard rules expect plain CSS.
+src/index.css

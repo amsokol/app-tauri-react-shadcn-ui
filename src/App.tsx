@@ -1,52 +1,20 @@
-import {invoke} from '@tauri-apps/api/core'
-import {useState} from 'react'
+import {Button} from '@/components/ui/button'
 
-import './App.css'
-
-import reactLogo from './assets/react.svg'
-
-function App() {
-  const [greetMsg, setGreetMsg] = useState('')
-  const [name, setName] = useState('')
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke('greet', {name}))
-  }
-
+export function App() {
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank" rel="noreferrer">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='flex min-h-svh p-6'>
+      <div className='flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose'>
+        <div>
+          <h1 className='font-medium'>Project ready!</h1>
+          <p>You may now add components and start building.</p>
+          <p>We&apos;ve already added the button component for you.</p>
+          <Button className='mt-2'>Button</Button>
+        </div>
+        <div className='font-mono text-xs text-muted-foreground'>
+          (Press <kbd>d</kbd> to toggle dark mode)
+        </div>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={e => {
-          e.preventDefault()
-          void greet()
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={e => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+    </div>
   )
 }
 

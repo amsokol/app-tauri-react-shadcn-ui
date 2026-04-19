@@ -1,7 +1,24 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["src/main.tsx"],
+  "rules": {
+    "duplicates": "off"
+  },
+  "entry": ["src/main.tsx", "vite.config.ts", "vite-app.vite.config.ts"],
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": ["src-tauri/**"],
-  "ignoreDependencies": ["@tauri-apps/plugin-opener"]
+  "ignoreDependencies": [
+    "@tauri-apps/plugin-opener",
+    "@tauri-apps/api",
+    "@fontsource-variable/inter",
+    "@hugeicons/core-free-icons",
+    "@hugeicons/react",
+    "shadcn",
+    "tailwindcss",
+    "tw-animate-css"
+  ],
+  "ignoreIssues": {
+    "src/App.tsx": ["exports"],
+    "src/components/theme-provider.tsx": ["exports"],
+    "src/components/ui/button.tsx": ["exports"]
+  }
 }

@@ -62,9 +62,21 @@ export default defineConfig(
     },
   },
   {
-    files: ['vite.config.ts'],
+    files: ['vite.config.ts', 'vite-app.vite.config.ts'],
     languageOptions: {
       globals: globals.node,
+    },
+  },
+  {
+    files: ['src/main.tsx'],
+    rules: {
+      'import-x/no-named-as-default': 'off',
+    },
+  },
+  {
+    files: ['src/components/ui/button.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
     },
   },
   {
@@ -74,5 +86,5 @@ export default defineConfig(
       'import-x/no-named-as-default-member': 'off',
     },
   },
-  eslintConfigPrettier,
+  eslintConfigPrettier
 )
