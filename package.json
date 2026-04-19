@@ -1,5 +1,5 @@
 {
-  "name": "tauri-app",
+  "name": "app-tauri-react-shadcn-ui",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,7 +7,17 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "lint": "eslint .",
+    "lint:stylelint": "stylelint \"**/*.{css,scss}\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:rust": "cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings",
+    "lint:rust:fmt": "cargo fmt --manifest-path src-tauri/Cargo.toml -- --check",
+    "lint:knip": "knip",
+    "lint:all": "pnpm lint && pnpm lint:stylelint && pnpm lint:md && pnpm lint:rust && pnpm lint:rust:fmt && pnpm lint:knip",
+    "security:audit": "pnpm audit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "react": "catalog:",
@@ -15,11 +25,37 @@
     "@tauri-apps/api": "catalog:",
     "@tauri-apps/plugin-opener": "catalog:"
   },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "eslint-plugin-jsx-a11y>eslint": "^10.0.0",
+        "eslint-plugin-react>eslint": "^10.0.0"
+      }
+    }
+  },
   "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "catalog:",
+    "@eslint/js": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-import-resolver-typescript": "catalog:",
+    "eslint-plugin-import-x": "catalog:",
+    "eslint-plugin-jsx-a11y": "catalog:",
+    "eslint-plugin-react": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
+    "globals": "catalog:",
+    "knip": "catalog:",
+    "markdownlint-cli2": "catalog:",
+    "prettier": "catalog:",
+    "stylelint": "catalog:",
+    "stylelint-config-standard": "catalog:",
+    "stylelint-prettier": "catalog:",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "@tauri-apps/cli": "catalog:"
   }

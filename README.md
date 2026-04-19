@@ -4,7 +4,26 @@ This template should help get you started developing with Tauri, React and Types
 
 ## Recommended IDE Setup
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- [VS Code](https://code.visualstudio.com/) or [Cursor](https://cursor.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+
+## Formatting and linting
+
+From the **repo root**, after `pnpm install`:
+
+- **`pnpm format`** — Write formatting with [Prettier](https://prettier.io) (import sorting via `.prettierrc.json`; ignores `.prettierignore`).
+- **`pnpm format:check`** — Check only (use in CI; exits non-zero if anything needs formatting).
+- **`pnpm lint`** — ESLint for TS/TSX (`eslint.config.js`): TypeScript (including type-aware rules), React, accessibility, imports, etc.
+- **`pnpm lint:stylelint`** — Stylelint on `**/*.{css,scss}` (`.stylelintrc.json`).
+- **`pnpm lint:md`** — Markdownlint ([markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2), `.markdownlint-cli2.jsonc`).
+- **`pnpm lint:knip`** — Find unused files, exports, and dependencies (`knip.json`).
+- **`pnpm lint:rust`** — `cargo clippy` (requires [Rust](https://www.rust-lang.org/) and a buildable `src-tauri/Cargo.toml`).
+- **`pnpm lint:rust:fmt`** — `cargo fmt` in check mode.
+- **`pnpm lint:all`** — Runs the JavaScript/CSS/Markdown/Rust checks above in one command.
+- **`pnpm security:audit`** — `pnpm audit` (advisories; not part of `lint:all`).
+
+**In the editor:** this repo includes `.vscode/settings.json` (workspace-only) so **Prettier formats on save** and **ESLint can fix issues on save** while this folder is open. Install the **recommended extensions** when prompted, or open the Extensions view and accept the suggestions from `.vscode/extensions.json` (Prettier, ESLint, Stylelint, Markdownlint).
+
+Rust formatting in the IDE is usually handled by **rust-analyzer** (“Format Document”) using **`rustfmt`**; CLI checks use the scripts above.
 
 ## Dependency cooldown (supply chain)
 
@@ -16,7 +35,7 @@ Rust dependencies can be checked with **[cargo-cooldown](https://crates.io/crate
 cargo install --locked cargo-cooldown
 ```
 
-Run Cargo through it. The Rust manifest is under **`src-tauri/`**, so **`./Cargo.toml` at the repo root does not exist** (*manifest path does not exist*).
+Run Cargo through it. The Rust manifest is under **`src-tauri/`**, so **`./Cargo.toml` at the repo root does not exist** (_manifest path does not exist_).
 
 **Important:** `cargo-cooldown` reads **`cooldown.toml` from your shell’s current directory** (`./cooldown.toml`), **not** from the directory of `--manifest-path`. So **`src-tauri/cooldown.toml` is only loaded if you run commands with `cd src-tauri`** (see [`workspace_config_path`](https://github.com/dertin/cargo-cooldown/blob/main/src/config.rs)). From the repo root, cooldown is effectively off unless you set `COOLDOWN_MINUTES` or add a `./cooldown.toml` at the root.
 
