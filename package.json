@@ -31,8 +31,8 @@
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {
-        "eslint-plugin-jsx-a11y>eslint": "^10.0.0",
-        "eslint-plugin-react>eslint": "^10.0.0"
+        "eslint-plugin-jsx-a11y>eslint": "^10.2.0",
+        "eslint-plugin-react>eslint": "^10.2.0"
       }
     }
   },
