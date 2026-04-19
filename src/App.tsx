@@ -1,9 +1,5 @@
 import {Button} from '@/components/ui/button'
-import {
-  Field,
-  FieldDescription,
-  FieldLabel,
-} from '@/components/ui/field'
+import {Field, FieldDescription, FieldLabel} from '@/components/ui/field'
 import {Input} from '@/components/ui/input'
 import {invoke} from '@tauri-apps/api/core'
 import {useState} from 'react'
@@ -24,22 +20,21 @@ export function App() {
           <h1 className='font-medium'>Project ready!</h1>
           <p>You may now add components and start building.</p>
           <p>We&apos;ve already added the button component for you.</p>
-          <Field className='mt-2'>
+          <Field>
             <FieldLabel htmlFor='name'>Name</FieldLabel>
             <Input
               id='name'
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               placeholder='Enter a name…'
             />
             <FieldDescription>
-              Passed to the Rust <code className='rounded bg-muted px-1'>greet</code>{' '}
-              command when you click Greet.
+              Passed to the Rust{' '}
+              <code className='rounded bg-muted px-1'>greet</code> command when
+              you click Greet.
             </FieldDescription>
           </Field>
-          <Button className='mt-2' onClick={() => void greet()}>
-            Greet
-          </Button>
+          <Button onClick={() => void greet()}>Greet</Button>
           <p>{greetMsg}</p>
         </div>
         <div className='font-mono text-xs text-muted-foreground'>
