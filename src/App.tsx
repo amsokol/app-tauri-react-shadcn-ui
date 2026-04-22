@@ -1,16 +1,16 @@
-import {Button} from '@/components/ui/button'
-import {Field, FieldDescription, FieldLabel} from '@/components/ui/field'
-import {Input} from '@/components/ui/input'
-import {invoke} from '@tauri-apps/api/core'
-import {useState} from 'react'
+import {Button} from "@/components/ui/button"
+import {Field, FieldDescription, FieldLabel} from "@/components/ui/field"
+import {Input} from "@/components/ui/input"
+import {invoke} from "@tauri-apps/api/core"
+import {useState} from "react"
 
 export function App() {
-  const [greetMsg, setGreetMsg] = useState('')
-  const [name, setName] = useState('')
+  const [greetMsg, setGreetMsg] = useState("")
+  const [name, setName] = useState("")
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke('greet', {name}))
+    setGreetMsg(await invoke("greet", {name}))
   }
 
   return (
@@ -29,7 +29,7 @@ export function App() {
               placeholder='Enter a name…'
             />
             <FieldDescription>
-              Passed to the Rust{' '}
+              Passed to the Rust{" "}
               <code className='rounded bg-muted px-1'>greet</code> command when
               you click Greet.
             </FieldDescription>
