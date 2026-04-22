@@ -37,9 +37,6 @@ export function App() {
           <Button onClick={() => void greet()}>Greet</Button>
           <p>{greetMsg}</p>
         </div>
-        <div className='font-mono text-xs text-muted-foreground'>
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
       </div>
     </div>
   )
