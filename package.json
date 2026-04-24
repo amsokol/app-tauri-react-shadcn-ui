@@ -46,11 +46,15 @@
         "eslint-plugin-jsx-a11y>eslint": "^10.2.0",
         "eslint-plugin-react>eslint": "^10.2.0"
       }
-    }
+    },
+    "onlyBuiltDependencies": [
+      "msw"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@ianvs/prettier-plugin-sort-imports": "catalog:",
+    "@tauri-apps/cli": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
@@ -73,7 +77,6 @@
     "stylelint-prettier": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
-    "vite": "catalog:",
-    "@tauri-apps/cli": "catalog:"
+    "vite": "catalog:"
   }
 }
