@@ -16,7 +16,7 @@
         "title": "Tauri + React + Typescript + Shadcn + Tailwind CSS",
         "width": 1024,
         "height": 768,
-        "transparent": true,
+        "transparent": false,
         "windowEffects": {
           "effects": ["contentBackground"],
           "state": "followsWindowActiveState"
