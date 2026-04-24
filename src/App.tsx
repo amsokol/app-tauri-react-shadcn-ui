@@ -14,7 +14,7 @@ export function App() {
   }
 
   return (
-    <div className='flex min-h-svh p-6'>
+    <div className='glass-shell flex min-h-svh flex-col p-6'>
       <div className='flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose'>
         <div>
           <h1 className='font-medium'>Project ready!</h1>
@@ -30,8 +30,8 @@ export function App() {
             />
             <FieldDescription>
               Passed to the Rust{" "}
-              <code className='rounded bg-muted px-1'>greet</code> command when
-              you click Greet.
+              <code className='rounded bg-muted px-1'>greet</code> command when you
+              click Greet.
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>

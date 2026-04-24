@@ -10,11 +10,17 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
         "title": "Tauri + React + Typescript + Shadcn + Tailwind CSS",
         "width": 1024,
-        "height": 768
+        "height": 768,
+        "transparent": true,
+        "windowEffects": {
+          "effects": ["contentBackground"],
+          "state": "followsWindowActiveState"
+        }
       }
     ],
     "security": {

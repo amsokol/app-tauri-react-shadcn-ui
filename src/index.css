@@ -121,10 +121,26 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    color-scheme: light dark;
+    background-color: transparent;
+  }
+  body {
+    @apply text-foreground;
+    background-color: transparent;
+  }
+  #root {
+    min-height: 100svh;
+    background-color: transparent;
+  }
+}
+
+/* Linux (and web): no native window backdrop — blur/saturate the webview stack. */
+@layer components {
+  .glass-shell {
+    background-color: color-mix(in oklch, var(--background) 72%, transparent);
+    backdrop-filter: blur(32px) saturate(1.35);
+    -webkit-backdrop-filter: blur(32px) saturate(1.35);
   }
 }
