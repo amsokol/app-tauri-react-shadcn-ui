@@ -40,17 +40,6 @@
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "eslint-plugin-jsx-a11y>eslint": "^10.2.0",
-        "eslint-plugin-react>eslint": "^10.2.0"
-      }
-    },
-    "onlyBuiltDependencies": [
-      "msw"
-    ]
-  },
   "devDependencies": {
     "@eslint/js": "catalog:",
     "@ianvs/prettier-plugin-sort-imports": "catalog:",
