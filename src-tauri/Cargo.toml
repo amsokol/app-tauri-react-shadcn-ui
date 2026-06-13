@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "A Tauri App with React"
 authors = ["Aleksandr Sokolovskii"]
 edition = "2024"
-rust-version = "1.95.0"
+rust-version = "1.96.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -16,14 +16,14 @@ name = "tauri_app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.5.6", features = [] }
+tauri-build = { version = "2.6.2", features = [] }
 
 [dependencies]
-mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.3.1" }
-tauri = { version = "2.10.3", features = ["macos-private-api"] }
-tauri-plugin-opener = "2.5.3"
+mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.3.2" }
+tauri = { version = "2.11.2", features = ["macos-private-api"] }
+tauri-plugin-opener = "2.5.4"
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
+serde_json = "1.0.150"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-window-state = "2.4.1"
