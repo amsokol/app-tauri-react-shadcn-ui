@@ -63,3 +63,9 @@ COOLDOWN_MINUTES=2880 cargo cooldown --manifest-path src-tauri/Cargo.toml check
 `cargo-cooldown` needs to reach **crates.io** (and may change `Cargo.lock` when it pins older versions). If you see DNS or network errors, check your connection, VPN, or corporate proxy.
 
 Override per run with `COOLDOWN_MINUTES`, or relax specific crates via a `cooldown-allowlist.toml` (see the crate README). CI can keep using plain `cargo` against a committed `Cargo.lock`.
+
+## Update Shadcn components
+
+```bash
+pnpm dlx shadcn@latest add button field input label separator --overwrite -y
+```
