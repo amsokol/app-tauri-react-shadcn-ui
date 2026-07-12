@@ -1,3 +1,0 @@
-# Same window as minimumReleaseAge in ../pnpm-workspace.yaml (2 days).
-cooldown_minutes = 2880
-mode = "enforce"
