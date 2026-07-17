@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "lint": "eslint .",
-    "lint:stylelint": "stylelint \"**/*.{css,scss}\"",
+    "lint:stylelint": "stylelint \"**/*.{css,scss}\" --allow-empty-input",
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:rust": "cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings",
     "lint:rust:fmt": "cargo fmt --manifest-path src-tauri/Cargo.toml -- --check",
