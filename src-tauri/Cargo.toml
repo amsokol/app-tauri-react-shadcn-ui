@@ -19,7 +19,12 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2.6.3", features = [] }
 
 [dependencies]
+# Intentional git dependency (not crates.io): project-maintained Rust bindings for
+# Microsoft mimalloc 3.x. Pin by tag for reproducible builds; bump tag when updating.
+# Docs: https://github.com/amsokol/mimalloc
 mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.4.1" }
+# Required with app.macOSPrivateApi for windowEffects (e.g. contentBackground).
+# Private APIs can affect Mac App Store / notarization — revisit before distribution.
 tauri = { version = "2.11.5", features = ["macos-private-api"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.150"

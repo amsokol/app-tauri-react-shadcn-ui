@@ -29,6 +29,22 @@ Rust formatting in the IDE is usually handled by **rust-analyzer** (“Format Do
 
 JS dependencies use **pnpm** [`minimumReleaseAge`](https://pnpm.io/settings) in `pnpm-workspace.yaml` (2 days, in minutes).
 
+## Native dependencies
+
+### mimalloc (git fork)
+
+The Rust binary uses [Microsoft mimalloc](https://github.com/microsoft/mimalloc) via the project-maintained bindings at [`amsokol/mimalloc`](https://github.com/amsokol/mimalloc), pinned by **git tag** (not crates.io):
+
+```toml
+mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.4.1" }
+```
+
+This is intentional: the fork tracks mimalloc 3.x with edition 2024 bindings. Prefer bumping the **tag** (and refreshing `Cargo.lock`) over switching to crates.io unless those bindings are published there.
+
+### macOS private API
+
+`macOSPrivateApi` in `src-tauri/tauri.conf.json` and the `macos-private-api` Cargo feature are enabled so macOS can use `windowEffects` (e.g. `contentBackground`). That relies on Apple private APIs and can affect **Mac App Store** eligibility and notarization review — reassess before shipping a Mac distribution build. Windows uses Mica/Acrylic in Rust setup instead; Linux falls back to CSS glass styling.
+
 ## Update Shadcn components
 
 ```bash

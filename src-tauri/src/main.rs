@@ -3,6 +3,7 @@
 
 use mimalloc::MiMalloc;
 
+// Global allocator: amsokol/mimalloc (git tag). See README “Native dependencies”.
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 
