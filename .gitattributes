@@ -1,0 +1,18 @@
+# Keep working-tree line endings LF on all platforms (matches Prettier endOfLine: "lf").
+* text=auto eol=lf
+
+# Windows scripts may keep CRLF when present.
+*.{cmd,bat,ps1} text eol=crlf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.icns binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
