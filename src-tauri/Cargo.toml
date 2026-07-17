@@ -22,7 +22,9 @@ tauri-build = { version = "2.6.3", features = [] }
 # Intentional git dependency (not crates.io): project-maintained Rust bindings for
 # Microsoft mimalloc 3.x. Pin by tag for reproducible builds; bump tag when updating.
 # Docs: https://github.com/amsokol/mimalloc
-mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.4.1" }
+# Stay on v3.3.2: mimalloc v3.4.0/v3.4.1 crash on macOS (TLS slots 126/127 vs CoreFoundation).
+# https://github.com/microsoft/mimalloc/issues/1333
+mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.3.2" }
 # Required with app.macOSPrivateApi for windowEffects (e.g. contentBackground).
 # Private APIs can affect Mac App Store / notarization — revisit before distribution.
 tauri = { version = "2.11.5", features = ["macos-private-api"] }
