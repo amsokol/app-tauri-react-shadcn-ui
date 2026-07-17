@@ -7,7 +7,6 @@
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": ["src-tauri/**"],
   "ignoreDependencies": [
-    "@tauri-apps/plugin-opener",
     "@tauri-apps/api",
     "@fontsource-variable/inter",
     "@hugeicons/core-free-icons",
