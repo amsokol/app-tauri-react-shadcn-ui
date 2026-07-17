@@ -11,13 +11,18 @@ concurrency:
 
 jobs:
   check:
-    name: Lint, typecheck, audit, build
-    runs-on: ubuntu-24.04
+    name: Lint, typecheck, audit, build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
       - name: Install Linux dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
