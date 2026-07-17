@@ -21,6 +21,10 @@ From the **repo root**, after `pnpm install`:
 - **`pnpm lint:all`** — Runs the JavaScript/CSS/Markdown/Rust checks above in one command.
 - **`pnpm security:audit`** — `pnpm audit` (advisories; not part of `lint:all`).
 
+**shadcn UI:** generated files under `src/components/ui/` are excluded from ESLint, Prettier, and knip (re-add components with the shadcn CLI rather than hand-linting them).
+
+**CI:** GitHub Actions (`.github/workflows/ci.yml`) runs `format:check`, `lint:all`, `typecheck`, `security:audit` (non-blocking while transitive advisories remain), and `pnpm build` on pushes and pull requests to `main`.
+
 **In the editor:** this repo includes `.vscode/settings.json` (workspace-only) so **Prettier formats on save** and **ESLint can fix issues on save** while this folder is open. Install the **recommended extensions** when prompted, or open the Extensions view and accept the suggestions from `.vscode/extensions.json` (Prettier, ESLint, Stylelint, Markdownlint).
 
 Rust formatting in the IDE is usually handled by **rust-analyzer** (“Format Document”) using **`rustfmt`**; CLI checks use the scripts above.

@@ -30,8 +30,8 @@ export function App() {
             />
             <FieldDescription>
               Passed to the Rust{" "}
-              <code className='rounded bg-muted px-1'>greet</code> command when you
-              click Greet.
+              <code className='rounded bg-muted px-1'>greet</code> command when
+              you click Greet.
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>

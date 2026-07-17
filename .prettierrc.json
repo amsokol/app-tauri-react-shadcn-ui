@@ -6,7 +6,7 @@
   ],
   "importOrder": ["<BUILTIN_MODULES>", "<THIRD_PARTY_MODULES>", "", "^[./]"],
   "importOrderParserPlugins": ["typescript", "jsx"],
-  "importOrderTypeScriptVersion": "7.0.0",
+  "importOrderTypeScriptVersion": "6.0.3",
   "bracketSpacing": false,
   "tabWidth": 2,
   "semi": false,

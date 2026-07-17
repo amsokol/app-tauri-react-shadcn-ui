@@ -10,7 +10,7 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default defineConfig(
-  {ignores: ["dist", "src-tauri/target"]},
+  {ignores: ["dist", "src-tauri/target", "src/components/ui/**"]},
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
@@ -71,12 +71,6 @@ export default defineConfig(
     files: ["src/main.tsx"],
     rules: {
       "import-x/no-named-as-default": "off",
-    },
-  },
-  {
-    files: ["src/components/ui/button.tsx"],
-    rules: {
-      "react-refresh/only-export-components": "off",
     },
   },
   {

@@ -5,7 +5,7 @@
   },
   "entry": ["src/main.tsx", "vite.config.ts", "vite-app.vite.config.ts"],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["src-tauri/**"],
+  "ignore": ["src-tauri/**", "src/components/ui/**"],
   "ignoreDependencies": [
     "@tauri-apps/api",
     "@fontsource-variable/inter",
@@ -17,7 +17,6 @@
   ],
   "ignoreIssues": {
     "src/App.tsx": ["exports"],
-    "src/components/theme-provider.tsx": ["exports"],
-    "src/components/ui/button.tsx": ["exports"]
+    "src/components/theme-provider.tsx": ["exports"]
   }
 }
