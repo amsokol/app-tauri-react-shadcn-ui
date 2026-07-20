@@ -61,7 +61,7 @@ cargo update --manifest-path src-tauri/Cargo.toml
 cargo update --manifest-path src-tauri/Cargo.toml -p tauri -p tauri-build
 ```
 
-3. Refresh stale `depbot:` comments after unlock bumps.
+1. Refresh stale `depbot:` comments after unlock bumps.
 
 ## Verify (see `verify-migrate.md` on ship)
 
@@ -76,8 +76,9 @@ pnpm tauri build
 
 ```markdown
 ## Cargo (src-tauri)
-| Crate | Pinned | Available | Quarantine | Action |
-|-------|--------|-----------|------------|--------|
-| tauri | 2.11.5 | … | cleared / wait | … |
-| mimalloc | git tag v3.3.2 | … | … | held / … |
+
+| Crate    | Pinned         | Available | Quarantine     | Action   |
+| -------- | -------------- | --------- | -------------- | -------- |
+| tauri    | 2.11.5         | …         | cleared / wait | …        |
+| mimalloc | git tag v3.3.2 | …         | …              | held / … |
 ```

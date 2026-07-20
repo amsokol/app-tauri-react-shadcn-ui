@@ -12,9 +12,9 @@ git tags), not only packages where the package manager enforces it.
 
 ## Duration
 
-| Setting | Value |
-|---------|-------|
-| Quarantine | **2 days** (48 hours) |
+| Setting          | Value                                                                    |
+| ---------------- | ------------------------------------------------------------------------ |
+| Quarantine       | **2 days** (48 hours)                                                    |
 | pnpm enforcement | `minimumReleaseAge: 2880` minutes in `pnpm-workspace.yaml` (same window) |
 
 Do **not** lower or disable `minimumReleaseAge` unless the user explicitly overrides.
@@ -39,14 +39,14 @@ During discover / scan, check **current** pins in `pnpm-workspace.yaml` catalog 
 If a **currently installed / catalog-pinned** version has `published_at` younger than
 2 days:
 
-| Field | Value |
-|-------|--------|
-| Status | **`FORBIDDEN`** — quarantine policy violated |
-| Signal | Mandatory section **Quarantine violations** (see below); call out in the first lines of the plan |
+| Field          | Value                                                                                                                                          |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Status         | **`FORBIDDEN`** — quarantine policy violated                                                                                                   |
+| Signal         | Mandatory section **Quarantine violations** (see below); call out in the first lines of the plan                                               |
 | Default action | **Propose rollback** to the newest version of that package that already cleared 2 days (or previous pin if known). Do **not** silently accept. |
-| Dry-run | Report violation + proposed rollback; do not mutate unless the user asked to fix. |
-| Apply / PR | Only roll back when the user asked to fix violations (or “fix quarantine” / “ship remediation”). Separate small PR preferred. |
-| Do not | Bump *further* onto another still-quarantined version; hide the issue in a routine bump PR. |
+| Dry-run        | Report violation + proposed rollback; do not mutate unless the user asked to fix.                                                              |
+| Apply / PR     | Only roll back when the user asked to fix violations (or “fix quarantine” / “ship remediation”). Separate small PR preferred.                  |
+| Do not         | Bump _further_ onto another still-quarantined version; hide the issue in a routine bump PR.                                                    |
 
 Exceptions (still **must** list under violations with `exception:` reason):
 
@@ -80,10 +80,11 @@ and for keeping an already-fresh pin).
 
 ```markdown
 ## Quarantine (2 days)
-| Package | Candidate | Published | Age | Action |
-|---------|-----------|-----------|-----|--------|
-| vite | 8.2.0 | 2026-07-20 | < 2d | wait |
-| react | 19.2.8 | 2026-07-17 | ≥ 2d | eligible |
+
+| Package | Candidate | Published  | Age  | Action   |
+| ------- | --------- | ---------- | ---- | -------- |
+| vite    | 8.2.0     | 2026-07-20 | < 2d | wait     |
+| react   | 19.2.8    | 2026-07-17 | ≥ 2d | eligible |
 ```
 
 ### Already-pinned violations (mandatory if any)
@@ -95,9 +96,9 @@ Lead with a clear alert when this section is non-empty:
 
 > Policy breach: pinned versions younger than 2 days are not allowed.
 
-| Package | Pinned now | Published | Age | Proposed fix |
-|---------|------------|-----------|-----|--------------|
-| some-lib | =1.2.3 | 2026-07-20 | < 2d | rollback to =1.2.2 (cleared) |
+| Package  | Pinned now | Published  | Age  | Proposed fix                 |
+| -------- | ---------- | ---------- | ---- | ---------------------------- |
+| some-lib | =1.2.3     | 2026-07-20 | < 2d | rollback to =1.2.2 (cleared) |
 
 **Next:** ask to open a remediation PR, or confirm an explicit exception.
 ```

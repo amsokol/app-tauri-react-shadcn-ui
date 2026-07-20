@@ -18,10 +18,10 @@ only if asked. Prefer small reviewable bumps over mega-PRs.
 
 ## Ecosystems in this repo
 
-| Ecosystem | Where versions live | Lock / pin |
-|-----------|---------------------|------------|
-| **pnpm** | `pnpm-workspace.yaml` → `catalog:` | `pnpm-lock.yaml`; `package.json` uses `catalog:` |
-| **Cargo** | `src-tauri/Cargo.toml` | `src-tauri/Cargo.lock` |
+| Ecosystem      | Where versions live                                                   | Lock / pin                                                                 |
+| -------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **pnpm**       | `pnpm-workspace.yaml` → `catalog:`                                    | `pnpm-lock.yaml`; `package.json` uses `catalog:`                           |
+| **Cargo**      | `src-tauri/Cargo.toml`                                                | `src-tauri/Cargo.lock`                                                     |
 | **Toolchains** | `.nvmrc` / `.node-version`, `engines.node`, CI, `rust-toolchain.toml` | Node: human-only (`node-toolchain.md`); Rust: report-only unless user asks |
 
 Do not invent ecosystems that are absent.
@@ -89,7 +89,7 @@ Do not invent ecosystems that are absent.
 - Always include **Dependency comments** when any holds/unlocks exist.
 - Include **Coupled bundles** when any bundle/lockstep pins exist.
 - Include **Quarantine (2 days)** when any candidate was skipped for age.
-- Include **Quarantine violations (FORBIDDEN)** whenever a *current* pin is younger
+- Include **Quarantine violations (FORBIDDEN)** whenever a _current_ pin is younger
   than 2 days — put this near the top of the plan; do not bury it.
 - Include **Node toolchain** status every run; use **Node toolchain violations (FORBIDDEN)**
   on any drift — near the top with other FORBIDDEN sections.

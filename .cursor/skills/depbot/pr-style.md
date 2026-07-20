@@ -42,42 +42,53 @@ One line: what + scope. Examples:
 
 ```markdown
 ## Summary
+
 - What and why (security / routine / unlock / requested major).
 
 ## PR lifecycle
+
 - Track: daily (`deps/depbot`) / high-risk (…)
 - Action: created | updated | noop
 
 ## Dependency comments
+
 - Quotes / hold status.
 
 ## Coupled bundles
+
 - Bundle id, members, unlock status, single action.
 
 ## Node toolchain
+
 - Consistent Node 24, or **Node toolchain violations (FORBIDDEN)** table on drift.
   Depbot does not bump Node.
 
 ## Quarantine
+
 - Candidates skipped because younger than 2 days.
 - **Quarantine violations (FORBIDDEN):** current pins still younger than 2 days + proposed rollback.
 
 ## Changes
+
 - `name` `old -> new` (group if long).
 - Code/config migration touches (short list), if any.
 
 ## Verify & migrate
+
 - Commands run and results.
 - Fix rounds used; rolled back packages (or none).
 
 ## Risk
+
 - Low / medium / high; link release notes for majors.
 
 ## Test plan
+
 - [ ] Commands you ran (from verify ladder) and results
 - [ ] Anything skipped (and why)
 
 ## Notes
+
 - Backlog / unmet unlocks / needs-human migration
 ```
 

@@ -18,11 +18,11 @@ How to split dependency updates into reviewable units.
 
 ## Risk tiers
 
-| Tier | Examples | Default |
-|------|----------|---------|
-| Low | prettier, stylelint, knip, types packages (patch) | Group freely; daily verify ladder |
-| Medium | eslint plugins, vite plugins, small libs | Small groups; skim changelog; migrate if needed |
-| High | `tauri*`, `react`, `vite`, `typescript`, mimalloc | Separate PR; read notes; full verify ladder + migrate |
+| Tier   | Examples                                          | Default                                               |
+| ------ | ------------------------------------------------- | ----------------------------------------------------- |
+| Low    | prettier, stylelint, knip, types packages (patch) | Group freely; daily verify ladder                     |
+| Medium | eslint plugins, vite plugins, small libs          | Small groups; skim changelog; migrate if needed       |
+| High   | `tauri*`, `react`, `vite`, `typescript`, mimalloc | Separate PR; read notes; full verify ladder + migrate |
 
 Ship runs always follow `verify-migrate.md` (fix or roll back — do not leave silent red).
 
