@@ -1,11 +1,12 @@
 # Cargo (src-tauri)
 
-Rust deps live under **`src-tauri/`**.
+Rust **crates** live under **`src-tauri/`**.
+Rust **compiler** pins → see **`rust-toolchain.md`** (patch bumps on daily track).
 
 ## Detect
 
 - `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`
-- `rust-toolchain.toml` (channel) — **report-only** unless user asks to bump toolchain
+- `rust-toolchain.toml` + `rust-version` + CI composite — see `rust-toolchain.md`
 
 ## Scan
 
@@ -20,6 +21,7 @@ cargo outdated --manifest-path src-tauri/Cargo.toml
 (`cargo outdated` only if installed; otherwise dry-run / crates.io checks for named crates.)
 
 Always run the **comment pass** on `Cargo.toml` first.
+Also run the **Rust toolchain** scan (`rust-toolchain.md`) each dry-run / ship.
 
 ## Quarantine (2 days)
 

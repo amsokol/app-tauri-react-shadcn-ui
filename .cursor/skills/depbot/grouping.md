@@ -20,17 +20,18 @@ How to split dependency updates into reviewable units.
 
 ## Risk tiers and tracks
 
-| Tier                  | Examples                                                                 | Daily track?                                 | Verify                        |
-| --------------------- | ------------------------------------------------------------------------ | -------------------------------------------- | ----------------------------- |
-| Low                   | prettier, stylelint, knip, `@types/*` patch                              | **Yes**                                      | daily ladder                  |
-| Medium                | eslint plugins, small libs, **Vite/React/Tauri/TS patch+minor**          | **Yes**                                      | daily ladder (skim changelog) |
-| High (**major** only) | major bump of `tauri*`, `react`, `vite`, `typescript`; mimalloc tag line | **No** — separate track / blocked without OK | full ladder + migrate         |
+| Tier                  | Examples                                                                                                | Daily track?                           | Verify                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------- |
+| Low                   | prettier, stylelint, knip, `@types/*` patch, **Rust toolchain patch**                                   | **Yes**                                | daily ladder                  |
+| Medium                | eslint plugins, small libs, **Vite/React/Tauri/TS patch+minor**                                         | **Yes**                                | daily ladder (skim changelog) |
+| High (**major** only) | major bump of `tauri*`, `react`, `vite`, `typescript`; mimalloc tag; **Rust new train** (`1.97`→`1.98`) | **No** — separate / blocked without OK | full ladder + migrate         |
 
 Examples:
 
 - `vite` `8.1.4 → 8.1.5` (patch) → **daily**
 - `vite` `8.x → 9.x` (major) → **blocked** / high-risk track with explicit OK
 - `react` `19.2.7 → 19.2.8` → **daily**; `19 → 20` → separate / blocked
+- Rust `1.97.0 → 1.97.1` → **daily** (lockstep three pins); `1.97 → 1.98` → blocked
 
 Ship runs always follow `verify-migrate.md` (fix or roll back — do not leave silent red).
 

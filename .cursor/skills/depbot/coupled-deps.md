@@ -35,11 +35,12 @@ Put the same `depbot: bundle <id>` on every member (catalog + Cargo).
 
 ## Known couplings in this repo
 
-| Bundle (suggested id) | Members                                                                                                 |
-| --------------------- | ------------------------------------------------------------------------------------------------------- |
-| `tauri-stack`         | catalog `@tauri-apps/api`, `@tauri-apps/cli`; Cargo `tauri`, `tauri-build`, `tauri-plugin-window-state` |
-| `react`               | catalog `react`, `react-dom`, `@types/react`, `@types/react-dom`                                        |
-| `tailwind`            | catalog `tailwindcss`, `@tailwindcss/vite` (and related if pinned together)                             |
+| Bundle (suggested id) | Members                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `tauri-stack`         | catalog `@tauri-apps/api`, `@tauri-apps/cli`; Cargo `tauri`, `tauri-build`, `tauri-plugin-window-state`                   |
+| `react`               | catalog `react`, `react-dom`, `@types/react`, `@types/react-dom`                                                          |
+| `tailwind`            | catalog `tailwindcss`, `@tailwindcss/vite` (and related if pinned together)                                               |
+| `rust-toolchain`      | `rust-toolchain.toml` channel; `src-tauri/Cargo.toml` `rust-version`; `setup-toolchain` `toolchain` (`rust-toolchain.md`) |
 
 Infer unnamed lockstep from context and name the bundle in the plan table.
 

@@ -60,6 +60,8 @@ On verify failure:
 
 - Unrelated refactors, formatting-only churn, drive-by cleanups
 - Changing Node toolchain files (`node-toolchain.md`)
+- Changing Rust toolchain pins **except** as a lockstep **patch** bump
+  (`rust-toolchain.md`) that is part of this ship change-set
 - Disabling quarantine / `minimumReleaseAge`
 - Force-push, `reset --hard`, `git clean`
 - Expanding the bump set “while fixing” (no piggyback majors)

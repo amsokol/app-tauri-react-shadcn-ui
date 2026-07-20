@@ -5,10 +5,10 @@ PR per track, no empty pushes, no duplicate PRs.
 
 ## Tracks
 
-| Track                             | Branch                                        | Label            | Typical contents                                                                                      |
-| --------------------------------- | --------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
-| **daily**                         | `deps/depbot`                                 | `depbot`         | Eligible **patch/minor** bumps (incl. Vite/React/Tauri/TS non-majors), cleared bundles, Cargo patches |
-| **high-risk** (optional separate) | `deps/depbot-<topic>` e.g. `deps/depbot-vite` | `depbot` + topic | **Majors** of Vite / Tauri / React / TypeScript only — not mixed into daily                           |
+| Track                             | Branch                                        | Label            | Typical contents                                                                                                                  |
+| --------------------------------- | --------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **daily**                         | `deps/depbot`                                 | `depbot`         | Eligible **patch/minor** bumps (incl. Vite/React/Tauri/TS non-majors), **Rust toolchain patches**, cleared bundles, Cargo patches |
+| **high-risk** (optional separate) | `deps/depbot-<topic>` e.g. `deps/depbot-vite` | `depbot` + topic | **Majors** of Vite / Tauri / React / TypeScript; **Rust new trains** — not mixed into daily                                       |
 
 Default scheduled run uses the **daily** track only unless the user asks otherwise.
 
