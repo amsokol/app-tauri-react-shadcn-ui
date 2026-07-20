@@ -67,7 +67,9 @@ Do not invent ecosystems that are absent.
   younger than 2 days, always report **Quarantine violations** and propose rollback;
   do not hide or normalize it. Remediate only when the user asks (unless they waive).
 - Do not disable or lower `minimumReleaseAge` in `pnpm-workspace.yaml` unless the user overrides.
-- Stay inside the workspace; no force-push, no `git reset --hard`, no `git clean`.
+- Stay inside the workspace; no `git reset --hard` / `git clean` of unrelated work.
+  Force-push only as allowed in `pr-lifecycle.md` §A (recreate track branch from `main` when
+  **no** open depbot PR exists). Never force-push onto an open PR branch.
 - Do not bump past an unmet `depbot:` hold unless the user explicitly overrides.
 - Do not bump **part** of a coupled bundle; all members or none.
 - Do not bump majors of Tauri / React / Vite / TypeScript without explicit OK (or a satisfied unlock comment).

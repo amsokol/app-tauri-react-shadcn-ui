@@ -17,7 +17,8 @@ unchanged, update-in-place if delta). This file covers title/body/commit shape.
 3. Stage relevant files; commit with a clear message (new commit when updating an existing PR).
 4. Push and `gh pr create` **or** update the existing PR body; add label `depbot`.
 
-Do not amend published history. Do not force-push. Do not use `git clean` / `reset --hard`.
+Do not amend published history. Do not use `git clean` / `reset --hard`.
+Force-push only per `pr-lifecycle.md` §A (stale track branch recreate when no open PR).
 
 ## Branch naming
 
