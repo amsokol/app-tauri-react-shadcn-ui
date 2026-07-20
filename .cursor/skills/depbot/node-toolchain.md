@@ -7,13 +7,13 @@ bump Node toolchain pins. If pins disagree, that is a **FORBIDDEN** drift signal
 
 ## Canonical sources (must agree on major 24)
 
-| Location | Expected | Notes |
-|----------|----------|-------|
-| `.nvmrc` | `24` | Canonical for local + CI |
-| `.node-version` | `24` | Must match `.nvmrc` |
-| `package.json` → `engines.node` | major **24** (e.g. `>=24.13.0`) | Floor may have a patch; major must stay 24 until human bumps |
-| `.github/workflows/*` | `node-version-file: .nvmrc` (or explicit `24`) | Do not introduce a second hardcoded major |
-| catalog `@types/node` | **24.x** | Types major follows Node major; patch/minor of `@types/node` may move under quarantine rules, but **not** to 22/25/… |
+| Location                        | Expected                                       | Notes                                                                                                                |
+| ------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `.nvmrc`                        | `24`                                           | Canonical for local + CI                                                                                             |
+| `.node-version`                 | `24`                                           | Must match `.nvmrc`                                                                                                  |
+| `package.json` → `engines.node` | major **24** (e.g. `>=24.13.0`)                | Floor may have a patch; major must stay 24 until human bumps                                                         |
+| `.github/workflows/*`           | `node-version-file: .nvmrc` (or explicit `24`) | Do not introduce a second hardcoded major                                                                            |
+| catalog `@types/node`           | **24.x**                                       | Types major follows Node major; patch/minor of `@types/node` may move under quarantine rules, but **not** to 22/25/… |
 
 If a new file pins Node (Volta, `.tool-versions`, Dockerfile, docs badges), it must
 follow the same major — include it in the drift check when present.
@@ -45,13 +45,13 @@ When drift exists, lead near the top of the plan (with quarantine violations):
 
 > Policy: single Node major (24) everywhere; only a human may raise it.
 
-| Source | Value | Expected | Status |
-|--------|-------|----------|--------|
-| `.nvmrc` | 24 | 24 | ok |
-| `.node-version` | 22 | 24 | **DRIFT** |
-| `engines.node` | >=24.13.0 | major 24 | ok |
-| CI setup-node | .nvmrc | .nvmrc / 24 | ok |
-| `@types/node` | =24.13.3 | major 24 | ok |
+| Source          | Value     | Expected    | Status    |
+| --------------- | --------- | ----------- | --------- |
+| `.nvmrc`        | 24        | 24          | ok        |
+| `.node-version` | 22        | 24          | **DRIFT** |
+| `engines.node`  | >=24.13.0 | major 24    | ok        |
+| CI setup-node   | .nvmrc    | .nvmrc / 24 | ok        |
+| `@types/node`   | =24.13.3  | major 24    | ok        |
 
 **Next:** human aligns pins manually. Depbot will not bump Node.
 ```
@@ -60,6 +60,7 @@ When everything matches, a one-liner is enough:
 
 ```markdown
 ## Node toolchain
+
 - Node **24** consistent (`.nvmrc`, `.node-version`, `engines.node`, CI, `@types/node`)
 ```
 

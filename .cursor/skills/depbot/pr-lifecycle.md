@@ -5,10 +5,10 @@ PR per track, no empty pushes, no duplicate PRs.
 
 ## Tracks
 
-| Track | Branch | Label | Typical contents |
-|-------|--------|-------|------------------|
-| **daily** | `deps/depbot` | `depbot` | Low-risk pnpm patches, cleared bundles (e.g. tailwind), eligible Cargo patches |
-| **high-risk** (optional separate) | `deps/depbot-<topic>` e.g. `deps/depbot-vite` | `depbot` + topic | Vite / Tauri / React majors — **not** mixed into daily |
+| Track                             | Branch                                        | Label            | Typical contents                                                               |
+| --------------------------------- | --------------------------------------------- | ---------------- | ------------------------------------------------------------------------------ |
+| **daily**                         | `deps/depbot`                                 | `depbot`         | Low-risk pnpm patches, cleared bundles (e.g. tailwind), eligible Cargo patches |
+| **high-risk** (optional separate) | `deps/depbot-<topic>` e.g. `deps/depbot-vite` | `depbot` + topic | Vite / Tauri / React majors — **not** mixed into daily                         |
 
 Default scheduled run uses the **daily** track only unless the user asks otherwise.
 
@@ -96,6 +96,7 @@ When a run touches lifecycle, mention:
 
 ```markdown
 ## PR lifecycle
+
 - Track: daily (`deps/depbot`)
 - Action: created | updated | noop (up to date) | noop (nothing eligible) | blocked (rebase)
 - PR: <url or none>

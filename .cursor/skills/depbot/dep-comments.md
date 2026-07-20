@@ -23,13 +23,13 @@ mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.3.2" }
 "@tauri-apps/api": =2.11.1
 ```
 
-| Phrase | Meaning |
-|--------|---------|
-| `hold` / `pin` / `do not bump` | Block bumps unless condition met or user overrides |
-| `bundle <id>` | Coupled set — see `coupled-deps.md` |
-| `bump to X when …` / `until …` | Target + unlock condition |
-| `bump bundle to X when ALL …` | Every listed condition must pass before any member bumps |
-| `ok to patch` / `patch only` | Cap at patch (or patch+minor if said) |
+| Phrase                               | Meaning                                                                     |
+| ------------------------------------ | --------------------------------------------------------------------------- |
+| `hold` / `pin` / `do not bump`       | Block bumps unless condition met or user overrides                          |
+| `bundle <id>`                        | Coupled set — see `coupled-deps.md`                                         |
+| `bump to X when …` / `until …`       | Target + unlock condition                                                   |
+| `bump bundle to X when ALL …`        | Every listed condition must pass before any member bumps                    |
+| `ok to patch` / `patch only`         | Cap at patch (or patch+minor if said)                                       |
 | `security ok` / `security exception` | May bypass a soft hold **and** the 2-day quarantine (still report override) |
 
 Natural-language notes without `depbot:` still count if clearly about that pin.
@@ -48,9 +48,11 @@ Natural-language notes without `depbot:` still count if clearly about that pin.
 
 ```markdown
 ## Dependency comments
+
 - `mimalloc` held at `v3.3.2` — unlock: … (met / unmet)
 
 ## Coupled bundles
+
 - `tauri-stack`: … → bump bundle / blocked
 ```
 

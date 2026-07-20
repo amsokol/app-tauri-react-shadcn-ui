@@ -36,7 +36,7 @@ Repo config (do not weaken without explicit user OK):
 
 ```yaml
 # pnpm-workspace.yaml
-minimumReleaseAge: 2880   # 2 days, in minutes
+minimumReleaseAge: 2880 # 2 days, in minutes
 ```
 
 - `pnpm outdated` / install respect this when the feature applies; still **verify publish age**
@@ -68,7 +68,8 @@ pnpm build
 
 ```markdown
 ## pnpm catalog
-| Package | Catalog pin | Available | Quarantine | Action |
-|---------|-------------|-----------|------------|--------|
-| react | =19.2.7 | … | cleared / wait | hold / bump / skip |
+
+| Package | Catalog pin | Available | Quarantine     | Action             |
+| ------- | ----------- | --------- | -------------- | ------------------ |
+| react   | =19.2.7     | …         | cleared / wait | hold / bump / skip |
 ```

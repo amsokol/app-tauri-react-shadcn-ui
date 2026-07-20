@@ -9,11 +9,11 @@ the bump is reverted with a clear reason.
 
 ## When this applies
 
-| Mode | Verify + migrate |
-|------|------------------|
-| Dry-run / plan-only | No — plan only |
-| Ship / scheduled ship | **Yes** — required after apply |
-| Quarantine remediation (rollback fresh pins) | Yes — verify after rollback |
+| Mode                                         | Verify + migrate               |
+| -------------------------------------------- | ------------------------------ |
+| Dry-run / plan-only                          | No — plan only                 |
+| Ship / scheduled ship                        | **Yes** — required after apply |
+| Quarantine remediation (rollback fresh pins) | Yes — verify after rollback    |
 
 ## Verify ladder
 
@@ -32,9 +32,9 @@ Optional if time allows and JS tooling changed: `pnpm lint:knip`.
 
 All of the daily ladder, plus:
 
-5. `pnpm lint:all` (or remaining lint:* not yet run)
-6. `pnpm build`
-7. If Tauri/Cargo involved and environment allows: `pnpm tauri build` (or document skip + why)
+1. `pnpm lint:all` (or remaining lint:\* not yet run)
+2. `pnpm build`
+3. If Tauri/Cargo involved and environment allows: `pnpm tauri build` (or document skip + why)
 
 Do not claim “verified” without citing commands and exit status.
 
@@ -67,13 +67,13 @@ On verify failure:
 
 Stop migrating and **roll back** the problematic package(s) (or the whole track batch if inseparable) when any of:
 
-| Condition | Action |
-|-----------|--------|
-| **Max fix rounds** exceeded (default **4** verify→fix cycles per ship run) | Roll back offenders; report |
-| Fix would need a **major** policy exception (TS/React/Tauri/Vite) without user OK | Roll back; backlog |
-| Blast radius unclear / multi-package failure after 2 rounds | Prefer roll back the newest bump first, re-verify |
-| Coupled bundle member cannot migrate without leaving siblings broken | Roll back **entire bundle** |
-| Environment cannot run a required high-risk check | Do not mark verified; either skip ship for that check with explicit note, or leave PR as draft needing CI |
+| Condition                                                                         | Action                                                                                                    |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Max fix rounds** exceeded (default **4** verify→fix cycles per ship run)        | Roll back offenders; report                                                                               |
+| Fix would need a **major** policy exception (TS/React/Tauri/Vite) without user OK | Roll back; backlog                                                                                        |
+| Blast radius unclear / multi-package failure after 2 rounds                       | Prefer roll back the newest bump first, re-verify                                                         |
+| Coupled bundle member cannot migrate without leaving siblings broken              | Roll back **entire bundle**                                                                               |
+| Environment cannot run a required high-risk check                                 | Do not mark verified; either skip ship for that check with explicit note, or leave PR as draft needing CI |
 
 After rollback: refresh lockfiles, re-verify, update PR body (**rolled back:** … / **migrated:** …).
 
@@ -87,6 +87,7 @@ Always include when ship/migrate ran:
 
 ```markdown
 ## Verify & migrate
+
 - Commands: `pnpm typecheck` ✅, `pnpm lint` ✅, …
 - Fix rounds used: 1 / 4
 - Migrated (code/config): `src/…` (short list)
