@@ -1,0 +1,41 @@
+name: Setup toolchain
+description: >-
+  Install Linux Tauri deps (when on Linux), pnpm, Node (.nvmrc), Rust 1.97,
+  and Rust build cache — shared by CI and depbot.
+
+runs:
+  using: composite
+  steps:
+    - name: Install Linux dependencies
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          libwebkit2gtk-4.1-dev \
+          libayatana-appindicator3-dev \
+          librsvg2-dev \
+          patchelf
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6
+      with:
+        version: 11
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: "1.97.0"
+        components: clippy, rustfmt
+
+    - name: Cache Rust
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: src-tauri
+        cache-on-failure: true
