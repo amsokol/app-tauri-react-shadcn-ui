@@ -1,6 +1,6 @@
 name: Setup toolchain
 description: >-
-  Install Linux Tauri deps (when on Linux), pnpm, Node (.nvmrc), Rust 1.97,
+  Install Linux Tauri deps (when on Linux), pnpm, Node (.nvmrc), Rust 1.97.1,
   and Rust build cache — shared by CI and depbot.
 
 runs:
@@ -31,7 +31,7 @@ runs:
     - name: Setup Rust
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: "1.97.0"
+        toolchain: "1.97.1"
         components: clippy, rustfmt
 
     - name: Cache Rust
