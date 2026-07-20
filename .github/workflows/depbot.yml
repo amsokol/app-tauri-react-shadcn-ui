@@ -4,9 +4,9 @@
 # Repo secrets:
 #   CURSOR_API_KEY — Cursor Dashboard → Integrations
 #
-# Optional vars:
-#   CURSOR_MODEL — default composer-2.5 (empty → runner default)
-#   DEPBOT_RUNNER_REF — git ref of amsokol/ai-devsecops-cursor (default: main)
+# Repo variables:
+#   CURSOR_DEP_MODEL — required (e.g. composer-2.5); runner fails if unset/empty
+#   DEPBOT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main)
 
 name: depbot
 
@@ -37,20 +37,25 @@ jobs:
     timeout-minutes: 90
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_MODEL: ${{ vars.CURSOR_MODEL }}
+      CURSOR_DEP_MODEL: ${{ vars.CURSOR_DEP_MODEL }}
       GH_TOKEN: ${{ github.token }}
       GIT_AUTHOR_NAME: depbot
       GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
       GIT_COMMITTER_NAME: depbot
       GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
     steps:
-      - name: Check CURSOR_API_KEY
+      - name: Check secrets and vars
         run: |
           set -euo pipefail
           if [ -z "${CURSOR_API_KEY:-}" ]; then
             echo "::error::Missing secret CURSOR_API_KEY"
             exit 1
           fi
+          if [ -z "${CURSOR_DEP_MODEL:-}" ]; then
+            echo "::error::Missing variable CURSOR_DEP_MODEL (Settings → Secrets and variables → Actions → Variables)"
+            exit 1
+          fi
+          echo "CURSOR_DEP_MODEL=$CURSOR_DEP_MODEL"
 
       - name: Checkout
         uses: actions/checkout@v5
@@ -72,12 +77,10 @@ jobs:
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
 
       - name: Install depbot runner
         env:
-          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
