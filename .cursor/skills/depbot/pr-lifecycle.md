@@ -5,10 +5,10 @@ PR per track, no empty pushes, no duplicate PRs.
 
 ## Tracks
 
-| Track                             | Branch                                        | Label            | Typical contents                                                               |
-| --------------------------------- | --------------------------------------------- | ---------------- | ------------------------------------------------------------------------------ |
-| **daily**                         | `deps/depbot`                                 | `depbot`         | Low-risk pnpm patches, cleared bundles (e.g. tailwind), eligible Cargo patches |
-| **high-risk** (optional separate) | `deps/depbot-<topic>` e.g. `deps/depbot-vite` | `depbot` + topic | Vite / Tauri / React majors — **not** mixed into daily                         |
+| Track                             | Branch                                        | Label            | Typical contents                                                                                      |
+| --------------------------------- | --------------------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
+| **daily**                         | `deps/depbot`                                 | `depbot`         | Eligible **patch/minor** bumps (incl. Vite/React/Tauri/TS non-majors), cleared bundles, Cargo patches |
+| **high-risk** (optional separate) | `deps/depbot-<topic>` e.g. `deps/depbot-vite` | `depbot` + topic | **Majors** of Vite / Tauri / React / TypeScript only — not mixed into daily                           |
 
 Default scheduled run uses the **daily** track only unless the user asks otherwise.
 
@@ -89,7 +89,8 @@ Never: `git checkout deps/depbot` on a leftover remote tip and “add a few more
 
 - Never empty-push “activity” commits.
 - Never silent-skip a **FORBIDDEN** Node drift or quarantine violation — report even on noop bump days.
-- Never mix high-risk majors into the daily track PR unless the user explicitly asked for one combined PR.
+- Never mix high-impact **majors** into the daily track PR unless the user explicitly asked for one combined PR.
+  Patch/minor of Vite/React/Tauri/TypeScript **belong on daily** (`grouping.md`).
 - Never `git clean` / `reset --hard` of **unrelated** worktrees or user branches.
 - **`git push --force` is forbidden** except this single automation case:
   - **No open** track PR, and you are replacing `origin/deps/depbot` (or `deps/depbot-<topic>`)

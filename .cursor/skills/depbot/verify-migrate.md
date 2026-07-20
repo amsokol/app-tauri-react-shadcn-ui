@@ -28,9 +28,10 @@ Run from repo root. Stop at the first meaningful failure, fix (or roll back), th
 
 Optional if time allows and JS tooling changed: `pnpm lint:knip`.
 
-### High-risk track (Vite, Tauri, React, TypeScript major, tauri-stack)
+### High-risk / major track (Vite, Tauri, React, TypeScript **major**, tauri-stack major)
 
-All of the daily ladder, plus:
+Use when shipping a **major** (or user-requested high-risk special). For daily
+**patch/minor** (including Vite 8.1.x → 8.1.y), the daily ladder above is enough.
 
 1. `pnpm lint:all` (or remaining lint:\* not yet run)
 2. `pnpm build`

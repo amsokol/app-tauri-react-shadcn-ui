@@ -72,7 +72,8 @@ Do not invent ecosystems that are absent.
   **no** open depbot PR exists). Never force-push onto an open PR branch.
 - Do not bump past an unmet `depbot:` hold unless the user explicitly overrides.
 - Do not bump **part** of a coupled bundle; all members or none.
-- Do not bump majors of Tauri / React / Vite / TypeScript without explicit OK (or a satisfied unlock comment).
+- Do not bump **majors** of Tauri / React / Vite / TypeScript without explicit OK (or a satisfied unlock comment).
+  **Patch and minor** of those packages are allowed on the **daily** track (`grouping.md`).
 - Do not hand-edit generated shadcn files under `src/components/ui/` as part of a dep bump
   (unless `verify-migrate.md` exception applies and regeneration is required).
 - **Ship runs must verify:** after apply, follow `verify-migrate.md`. Prefer minimal migration
