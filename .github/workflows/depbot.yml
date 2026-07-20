@@ -77,6 +77,9 @@ jobs:
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
+        with:
+          # Lockfile lives in the cloned runner under $RUNNER_TEMP, not this repo.
+          enable-cache: false
 
       - name: Install depbot runner
         env:
