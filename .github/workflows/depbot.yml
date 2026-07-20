@@ -7,6 +7,11 @@
 # Repo variables:
 #   CURSOR_DEP_MODEL — required (e.g. composer-2.5); runner fails if unset/empty
 #   DEPBOT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main)
+#
+# Repo Settings → Actions → General → Workflow permissions:
+#   - Read and write permissions (or keep workflow `permissions:` below)
+#   - ✅ Allow GitHub Actions to create and approve pull requests
+#     (without this, ship pushes deps/depbot but `gh pr create` fails)
 
 name: depbot
 
