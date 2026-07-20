@@ -20,14 +20,18 @@ How to split dependency updates into reviewable units.
 
 | Tier | Examples | Default |
 |------|----------|---------|
-| Low | prettier, stylelint, knip, types packages (patch) | Group freely |
-| Medium | eslint plugins, vite plugins, small libs | Small groups; skim changelog |
-| High | `tauri*`, `react`, `vite`, `typescript`, mimalloc | Separate PR; read notes |
+| Low | prettier, stylelint, knip, types packages (patch) | Group freely; daily verify ladder |
+| Medium | eslint plugins, vite plugins, small libs | Small groups; skim changelog; migrate if needed |
+| High | `tauri*`, `react`, `vite`, `typescript`, mimalloc | Separate PR; read notes; full verify ladder + migrate |
+
+Ship runs always follow `verify-migrate.md` (fix or roll back — do not leave silent red).
 
 ## Bundles vs PR groups
 
 - **Bundle** (`coupled-deps.md`) = must land together atomically.
 - **PR group** = review packaging. Default: **one PR per unlocked high-risk bundle**.
+- **Daily track** (`pr-lifecycle.md`): low-risk eligible bumps share one open PR (`deps/depbot`);
+  high-risk stays on a separate track/PR.
 
 ## Huge lists
 

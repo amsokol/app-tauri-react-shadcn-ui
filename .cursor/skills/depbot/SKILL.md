@@ -4,8 +4,9 @@ description: >-
   Scans and updates pnpm catalog and Cargo/Tauri dependencies in this repo,
   enforces a 2-day release quarantine and a single Node 24 toolchain (human-only
   bumps; drift is forbidden), respects depbot: comments and coupled bundles,
-  opens focused PRs. Use when the user asks to bump deps, check outdated packages,
-  run depbot, audit dependencies, or update pnpm/Cargo/Tauri.
+  verifies builds and migrates code on breakage (or rolls back), idempotent daily
+  PRs, opens focused PRs. Use when the user asks to bump deps, check outdated
+  packages, run depbot, audit dependencies, or update pnpm/Cargo/Tauri.
 ---
 
 # Depbot
@@ -46,8 +47,14 @@ Do not invent ecosystems that are absent.
 10. **Apply** — edit catalog / Cargo pins; refresh lockfiles; refresh stale `depbot:` comments.
     Remediate **FORBIDDEN** quarantine pins only when the user asked to fix them.
     Never change Node toolchain files.
-11. **Verify** — lightest meaningful checks (`pnpm.md` / `cargo.md`).
-12. **Ship** — only if asked: branch → commit → `gh pr create` (`pr-style.md`).
+11. **Verify & migrate** — required on ship (`verify-migrate.md`): run the verify ladder;
+    on failure, minimal migration fixes (max 4 rounds) or roll back offenders; re-verify.
+    Dry-run: skip apply/verify.
+12. **Ship** — only if asked (or scheduled ship mode): follow `pr-lifecycle.md`
+    (reuse/update daily PR `deps/depbot`, noop if unchanged) + `pr-style.md`.
+    Include migration commits on the same PR. Do not open/update a PR as “done” if verify failed
+    unless remaining work is explicitly marked needs-human after rollback to green.
+    Dry-run / plan-only: stop after the plan — no branch/PR.
 
 ## Hard rules
 
@@ -64,11 +71,18 @@ Do not invent ecosystems that are absent.
 - Do not bump past an unmet `depbot:` hold unless the user explicitly overrides.
 - Do not bump **part** of a coupled bundle; all members or none.
 - Do not bump majors of Tauri / React / Vite / TypeScript without explicit OK (or a satisfied unlock comment).
-- Do not hand-edit generated shadcn files under `src/components/ui/` as part of a dep bump.
+- Do not hand-edit generated shadcn files under `src/components/ui/` as part of a dep bump
+  (unless `verify-migrate.md` exception applies and regeneration is required).
+- **Ship runs must verify:** after apply, follow `verify-migrate.md`. Prefer minimal migration
+  fixes; if still red after max rounds, roll back offenders and report. Do not leave a known-red
+  daily PR without saying so.
 - Toolchain pins (**Rust** channel) are **report-only** unless the user asks.
   **Node** is stronger: human-only bumps + mandatory drift signal (`node-toolchain.md`).
-- Prefer one logical change-set per PR; no refactors mixed into dep bumps.
-- If verification fails, stop and report.
+- Prefer one logical change-set per PR; no refactors mixed into dep bumps
+  (migration fixes for the bump are allowed; drive-by refactors are not).
+- Recurring runs: **idempotent PR lifecycle** (`pr-lifecycle.md`) — one open daily PR,
+  noop if no delta, update-in-place if delta; no empty pushes; no duplicate depbot PRs.
+- If verification fails after rollback attempts, stop and report.
 
 ## Communication
 
@@ -79,6 +93,9 @@ Do not invent ecosystems that are absent.
   than 2 days — put this near the top of the plan; do not bury it.
 - Include **Node toolchain** status every run; use **Node toolchain violations (FORBIDDEN)**
   on any drift — near the top with other FORBIDDEN sections.
+- Include **PR lifecycle** when shipping or when a scheduled run would touch PRs
+  (`created` / `updated` / `noop`).
+- Include **Verify & migrate** on every ship run (commands, rounds, migrated paths, rollbacks).
 - Keep the final answer concise; put detail in the PR body when opening one.
 
-Read `node-toolchain.md`, `quarantine.md`, `dep-comments.md`, `coupled-deps.md`, `grouping.md`, `pnpm.md`, `cargo.md`, and `pr-style.md` in this skill folder.
+Read `node-toolchain.md`, `quarantine.md`, `dep-comments.md`, `coupled-deps.md`, `grouping.md`, `pnpm.md`, `cargo.md`, `verify-migrate.md`, `pr-style.md`, and `pr-lifecycle.md` in this skill folder.

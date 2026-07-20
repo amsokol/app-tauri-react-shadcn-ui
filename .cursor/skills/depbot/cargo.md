@@ -63,12 +63,12 @@ cargo update --manifest-path src-tauri/Cargo.toml -p tauri -p tauri-build
 
 3. Refresh stale `depbot:` comments after unlock bumps.
 
-## Verify
+## Verify (see `verify-migrate.md` on ship)
 
 ```bash
 pnpm lint:rust
 pnpm lint:rust:fmt
-# optional if environment allows:
+# high-risk / when environment allows:
 pnpm tauri build
 ```
 

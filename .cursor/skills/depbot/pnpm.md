@@ -52,12 +52,14 @@ minimumReleaseAge: 2880   # 2 days, in minutes
 2. `pnpm install` to refresh `pnpm-lock.yaml`.
 3. Do not introduce non-catalog pins in `package.json` without a reason.
 
-## Verify (lightest meaningful)
+## Verify (see `verify-migrate.md` on ship)
+
+Lightest meaningful checks for this ecosystem; ship runs use the full ladder + migrate loop:
 
 ```bash
 pnpm typecheck
 pnpm lint
-# or broader if the bump is high-risk:
+# high-risk also:
 pnpm lint:all
 pnpm build
 ```
