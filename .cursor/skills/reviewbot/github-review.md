@@ -61,8 +61,10 @@ mutation($id:ID!) {
 }' -f id='PRRT_…'
 ```
 
-Skip resolve only if the GraphQL call fails after retry — then say so in the
-summary. Outdated ≠ resolved: you must still resolve fixed threads.
+Skip resolve only if GraphQL fails after retry — then say so in the summary
+(expected with default `GITHUB_TOKEN`: `Resource not accessible by integration`).
+In CI set secret `REVIEWBOT_GH_TOKEN` (PAT with Pull requests: write) so resolve
+works. Outdated ≠ resolved: you must still attempt resolve for fixed threads.
 
 ## Decision matrix
 
