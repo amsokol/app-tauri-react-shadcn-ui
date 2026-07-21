@@ -2,7 +2,6 @@ import {Button} from "@/components/ui/button"
 import {Field, FieldDescription, FieldLabel} from "@/components/ui/field"
 import {Input} from "@/components/ui/input"
 import {invoke} from "@tauri-apps/api/core"
-import {identity} from "lodash"
 import {useState} from "react"
 
 export function App() {
@@ -11,8 +10,7 @@ export function App() {
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    // Medium Part 3 demo: lodash kept in the runtime graph for the advisory finding.
-    setGreetMsg(await invoke("greet", {name: identity(name)}))
+    setGreetMsg(await invoke("greet", {name}))
   }
 
   return (
@@ -37,8 +35,7 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          {/* Medium Part 3 demo: intentional DOM XSS — vulnbot should issue + fix (escape / text node). */}
-          <div dangerouslySetInnerHTML={{__html: greetMsg}} />
+          <p>{greetMsg}</p>
         </div>
       </div>
     </div>

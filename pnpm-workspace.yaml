@@ -34,8 +34,6 @@ catalog:
   eslint-plugin-react-refresh: =0.5.3
   globals: =17.7.0
   knip: =6.26.0
-  # Medium Part 3 demo: intentional vulnerable pin (GHSA-35jh-r3h4-6jhm) — vulnbot should issue + bump.
-  lodash: =4.17.20
   markdownlint-cli2: =0.23.0
   prettier: =3.9.5
   prettier-plugin-tailwindcss: =0.8.0
@@ -66,6 +64,7 @@ overrides:
   esbuild: ">=0.28.1"
   fast-uri: ">=3.1.2"
   hono: ">=4.12.25"
+  "@hono/node-server": ">=2.0.5"
   ip-address: ">=10.1.1"
   js-yaml: ">=5.2.1"
   qs: ">=6.15.2"
