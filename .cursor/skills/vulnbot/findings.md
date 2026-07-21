@@ -2,12 +2,12 @@
 
 ## Severity
 
-| Level    | Meaning                                             |
-| -------- | --------------------------------------------------- |
-| critical | Actively exploitable / RCE / secret exposure        |
-| high     | Serious impact with plausible exploit path          |
-| medium   | Limited impact or harder exploit                    |
-| low      | Defense-in-depth / informational                    |
+| Level    | Meaning                                      |
+| -------- | -------------------------------------------- |
+| critical | Actively exploitable / RCE / secret exposure |
+| high     | Serious impact with plausible exploit path   |
+| medium   | Limited impact or harder exploit             |
+| low      | Defense-in-depth / informational             |
 
 Use `pnpm audit` / RustSec severity when available.
 
