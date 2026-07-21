@@ -98,3 +98,16 @@ Outdated ≠ resolved: you must still attempt resolve for fixed threads.
 3. No new blocking findings
 
 Requires Actions setting: allow approve pull requests.
+
+## Signals (CI)
+
+End the ship report with exactly one line:
+
+```text
+REVIEWBOT_SIGNAL: request-changes
+REVIEWBOT_SIGNAL: approve
+REVIEWBOT_SIGNAL: comment
+REVIEWBOT_SIGNAL: skipped-draft
+```
+
+`request-changes` → runner exit 5 (required check red). Other signals → exit 0.

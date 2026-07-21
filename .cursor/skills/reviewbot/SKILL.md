@@ -34,6 +34,8 @@ Policy for _this_ repo lives only in this skill folder.
 - Recheck: fixed or Outdated-and-gone → reply + **Resolve conversation**
   (GraphQL `resolveReviewThread`; Outdated ≠ resolved); still open → keep.
 - APPROVE only with zero **unresolved** bot threads and no new blocking findings.
+- End ship with exactly one `REVIEWBOT_SIGNAL:` line (`request-changes` →
+  runner exit 5 / CI red; `approve` / `comment` / `skipped-draft` → green).
 - No commits / drive-by refactors.
 
 Read `review-rubric.md`, `github-review.md`, `pr-style.md`.
