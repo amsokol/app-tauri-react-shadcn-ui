@@ -51,7 +51,8 @@ Dry-run: plan only (no branch/PR/close); issues only when signaling; still emit 
 - Honor pnpm catalog / Cargo lock conventions (same as depbot).
 - No drive-by refactors; no inventing audit tools not in the repo.
 - Idempotent issues + one open fix PR on `security/vulnbot`.
-- Ship must reconcile open `vulnbot` issues and close resolved ones.
+- Ship must reconcile open `vulnbot` issues and close resolved ones — based on
+  **this checkout only**, never by comparing to `origin/main`.
 
 ## Reporting (dry-run)
 

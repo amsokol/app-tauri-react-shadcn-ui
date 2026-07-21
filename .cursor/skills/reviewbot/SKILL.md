@@ -31,8 +31,9 @@ Policy for _this_ repo lives only in this skill folder.
 
 - Never APPROVE without reading the full PR diff.
 - Blocking → `REQUEST_CHANGES` (+ inline). Non-blocking alone does not block APPROVE.
-- Recheck: fixed → reply + resolve; still open → keep.
-- APPROVE only with zero open bot threads and no new blocking findings.
+- Recheck: fixed or Outdated-and-gone → reply + **Resolve conversation**
+  (GraphQL `resolveReviewThread`; Outdated ≠ resolved); still open → keep.
+- APPROVE only with zero **unresolved** bot threads and no new blocking findings.
 - No commits / drive-by refactors.
 
 Read `review-rubric.md`, `github-review.md`, `pr-style.md`.

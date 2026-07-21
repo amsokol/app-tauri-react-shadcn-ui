@@ -61,15 +61,23 @@ Labels: `vulnbot` (required).
 
 ## Close criteria (ship — mandatory reconcile)
 
+**Source of truth = the current working tree only** (this checkout / `cwd` /
+`GITHUB_SHA` / PR head). Do **not** use `origin/main`, the default branch, or
+another ref to decide that a finding is gone.
+
 After each ship scan:
 
-1. List open issues with label `vulnbot` (`gh issue list --label vulnbot --state open`).
-2. Match each issue to the current findings table by stable title key / advisory id.
-3. If the finding is **gone** on this tree:
-   - Comment: `vulnbot: resolved — finding no longer present (<scan date>). <brief evidence>`
+1. Confirm which ref you scanned (`git rev-parse HEAD`, branch/PR). Put it in
+   the close comment.
+2. List open issues with label `vulnbot` (`gh issue list --label vulnbot --state open`).
+3. Match each issue to the current findings table by stable title key / advisory id.
+4. Close **only** if the finding is absent from **this** tree (re-read the paths
+   in the issue; re-run the audit command on this checkout):
+   - Comment: `vulnbot: resolved — finding no longer present (<scan date>, HEAD=<sha>). <brief evidence from this tree>`
    - Close the issue.
-4. If still present → update body (Last scan + status); leave open.
-5. Do **not** auto-close solely for “accepted risk” chat unless the issue already
+5. If still present on this tree → update body (Last scan + status); leave open.
+6. Never close because “main is clean” while scanning a PR/feature checkout.
+7. Do **not** auto-close solely for “accepted risk” chat unless the issue already
    documents maintainer accepted risk as the resolution.
 
 Dry-run: report which issues _would_ close; do not close.

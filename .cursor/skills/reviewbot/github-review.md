@@ -24,24 +24,59 @@ gh pr review "$PR" --approve --body "…"
 Inline: API `pulls/{pr}/comments` or review `comments[]`. Prefer line comments
 for blocking items.
 
-## Resolve threads
+## Resolve threads (mandatory on recheck)
 
-Fixed prior finding → reply `reviewbot: fixed — <evidence>` → resolve thread
-(GraphQL `resolveReviewThread` when possible).
+When a prior **reviewbot** finding is fixed on the current head (including when
+GitHub already shows the comment as **Outdated** because the lines moved/deleted):
+
+1. Reply on the thread: `reviewbot: fixed — <brief evidence>`
+2. **Always** Resolve conversation via GraphQL (do not leave open/outdated):
+
+```bash
+# List review threads (need GraphQL node ids)
+gh api graphql -f query='
+query($owner:String!,$name:String!,$number:Int!) {
+  repository(owner:$owner, name:$name) {
+    pullRequest(number:$number) {
+      reviewThreads(first:100) {
+        nodes {
+          id
+          isResolved
+          isOutdated
+          comments(first:20) {
+            nodes { author { login } body databaseId }
+          }
+        }
+      }
+    }
+  }
+}' -F owner='{owner}' -F name='{repo}' -F number="$PR"
+
+# Resolve one thread
+gh api graphql -f query='
+mutation($id:ID!) {
+  resolveReviewThread(input:{threadId:$id}) {
+    thread { id isResolved }
+  }
+}' -f id='PRRT_…'
+```
+
+Skip resolve only if the GraphQL call fails after retry — then say so in the
+summary. Outdated ≠ resolved: you must still resolve fixed threads.
 
 ## Decision matrix
 
-| Situation                             | Action            |
-| ------------------------------------- | ----------------- |
-| Draft                                 | Skip              |
-| Blocking findings remain              | `REQUEST_CHANGES` |
-| No open bot threads + no new blocking | `APPROVE`         |
-| Summary only                          | `COMMENT`         |
+| Situation                                   | Action            |
+| ------------------------------------------- | ----------------- |
+| Draft                                       | Skip              |
+| Blocking findings remain                    | `REQUEST_CHANGES` |
+| No unresolved bot threads + no new blocking | `APPROVE`         |
+| Summary only                                | `COMMENT`         |
 
 ## APPROVE rules
 
 1. Diff read this run
-2. All open reviewbot threads resolved (or none)
+2. All reviewbot threads are **resolved** (not merely outdated)
 3. No new blocking findings
 
 Requires Actions setting: allow approve pull requests.
