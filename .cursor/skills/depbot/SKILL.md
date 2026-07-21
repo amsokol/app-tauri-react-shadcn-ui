@@ -73,9 +73,12 @@ Do not invent ecosystems that are absent.
   **New trains** (`1.97` → `1.98`) need explicit OK. Drift across the three pins → **FORBIDDEN**.
 - **2-day quarantine:** do not adopt a release published less than 48 hours ago
   (`quarantine.md`). Applies to pnpm, Cargo, git tags, and Rust toolchain patches.
-  Unknown publish time → do not bump.- **Already-pinned too fresh is FORBIDDEN:** if a current catalog/Cargo pin is still
-  younger than 2 days, always report **Quarantine violations** and propose rollback;
-  do not hide or normalize it. Remediate only when the user asks (unless they waive).
+  Unknown publish time → do not bump.
+- **Already-pinned too fresh is FORBIDDEN:** if a current catalog/Cargo pin is still
+  younger than 2 days, always report **Quarantine violations**, open/update issue
+  `depbot-quarantine-violation`, and end with `DEPBOT_SIGNAL: quarantine-violation`
+  (runner fails the job). Propose rollback; do not hide behind a green noop.
+  Remediate only when the user asks (unless they waive / security exception).
 - Do not disable or lower `minimumReleaseAge` in `pnpm-workspace.yaml` unless the user overrides.
 - Stay inside the workspace; no `git reset --hard` / `git clean` of unrelated work.
   Force-push only as allowed in `pr-lifecycle.md` §A (recreate track branch from `main` when
@@ -101,7 +104,8 @@ Do not invent ecosystems that are absent.
 - Include **Coupled bundles** when any bundle/lockstep pins exist.
 - Include **Quarantine (2 days)** when any candidate was skipped for age.
 - Include **Quarantine violations (FORBIDDEN)** whenever a _current_ pin is younger
-  than 2 days — put this near the top of the plan; do not bury it.
+  than 2 days — put this near the top of the plan; open/update the tracking issue;
+  end with `DEPBOT_SIGNAL: quarantine-violation` so CI fails.
 - Include **Node toolchain** status every run; use **Node toolchain violations (FORBIDDEN)**
   on any drift — near the top with other FORBIDDEN sections.
 - Include **Rust toolchain** status every run (`rust-toolchain.md`); drift → FORBIDDEN;

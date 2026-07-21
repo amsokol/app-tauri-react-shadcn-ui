@@ -48,10 +48,29 @@ If a **currently installed / catalog-pinned** version has `published_at` younger
 | Apply / PR     | Only roll back when the user asked to fix violations (or “fix quarantine” / “ship remediation”). Separate small PR preferred.                  |
 | Do not         | Bump _further_ onto another still-quarantined version; hide the issue in a routine bump PR.                                                    |
 
+### Required loud signaling (dry-run and ship)
+
+This is an **important event**. A green “noop” without a signal is not acceptable.
+
+1. Lead the report with **Quarantine violations (FORBIDDEN)**.
+2. Open or update a GitHub issue (idempotent):
+   - Label: `depbot-quarantine-violation` (create if missing).
+   - Title: `depbot: quarantine violation — pinned package(s) too fresh`
+   - Body: packages, ages, clear time, proposed rollback / wait.
+   - If an open issue with that label+title exists → update / comment; no duplicates.
+3. End the final answer with exactly:
+
+   `DEPBOT_SIGNAL: quarantine-violation`
+
+4. The depbot runner treats that line as **failure** (non-zero exit → red GitHub Actions).
+
 Exceptions (still **must** list under violations with `exception:` reason):
 
 - User explicitly approved keeping the fresh pin, **or**
 - `depbot: security ok` / `security exception` on that line for this version.
+
+When an explicit exception applies, **do not** emit `DEPBOT_SIGNAL: quarantine-violation`
+(still report the exception in the violations section).
 
 Unknown publish time on a current pin → treat as **FORBIDDEN / not confirmed** until age is proven ≥ 2 days (or user waives).
 
