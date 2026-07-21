@@ -8,10 +8,7 @@ fn greet(name: &str) -> String {
 #[tauri::command]
 fn run_shell(command: String) -> String {
     use std::process::Command;
-    let output = Command::new("sh")
-        .arg("-c")
-        .arg(&command)
-        .output();
+    let output = Command::new("sh").arg("-c").arg(&command).output();
     match output {
         Ok(o) => String::from_utf8_lossy(&o.stdout).into_owned(),
         Err(e) => format!("error: {e}"),
