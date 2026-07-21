@@ -1,4 +1,5 @@
 # Manual vulnerability scans via Cursor Agent SDK (ai-devsecops-cursor).
+# Also runs automatically as a job in ci.yml (ship + CI gate).
 # Trigger: Actions → vulnbot → Run workflow (dry-run | ship).
 #
 # Repo secrets:

@@ -32,10 +32,12 @@ Policy for _this_ repo lives only in this skill folder.
    depbot **2-day quarantine** unless security exception documented.
    Verify: `verify-migrate.md`.
 8. **Ship PR** — `pr-lifecycle.md` + `pr-style.md` when verify passes.
-9. **Critical unfixed** — emit exactly `VULNBOT_SIGNAL: critical-unfixed` if
-   critical remains without fix/mitigation after ship attempt.
+9. **CI gate signals** (required; runner fails the job) — see `findings.md`:
+   - Any actionable finding → `VULNBOT_SIGNAL: findings-present` (even if fix PR opened).
+   - Critical without fix/mitigation → also `VULNBOT_SIGNAL: critical-unfixed`.
+   - Clean scan → do not emit signals.
 
-Dry-run: plan only (no branch/PR); issues only when signaling.
+Dry-run: plan only (no branch/PR); issues only when signaling; still emit gate signals.
 
 ## Hard rules
 

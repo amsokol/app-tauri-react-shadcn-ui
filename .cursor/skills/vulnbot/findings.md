@@ -62,3 +62,13 @@ Labels: `vulnbot` (required).
 ## Close criteria
 
 Close when advisory is gone after fix merge, or risk accepted by maintainers.
+
+## CI gate signals
+
+Emit at the end of the report (exact lines; runner fails CI):
+
+| Condition                                                  | Line                                             |
+| ---------------------------------------------------------- | ------------------------------------------------ |
+| ≥1 actionable finding on this tree (even if fix PR opened) | `VULNBOT_SIGNAL: findings-present`               |
+| Critical without fix/mitigation                            | `VULNBOT_SIGNAL: critical-unfixed` (in addition) |
+| Clean scan                                                 | _(no signal lines)_                              |
