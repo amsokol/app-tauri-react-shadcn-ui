@@ -4,8 +4,10 @@
 #
 # Repo secrets:
 #   CURSOR_API_KEY — Cursor Dashboard → Integrations
-#   REVIEWBOT_GH_TOKEN — optional PAT for GraphQL resolveReviewThread (GITHUB_TOKEN
-#     cannot resolve threads: "Resource not accessible by integration")
+#   REVIEWBOT_GH_TOKEN — classic PAT (`repo`) for GraphQL resolveReviewThread only.
+#     Keep GH_TOKEN as github.token so reviews stay as github-actions[bot].
+#     Fine-grained PATs often fail resolve with
+#     "Resource not accessible by personal access token".
 #
 # Repo variables:
 #   CURSOR_REV_MODEL — required (e.g. composer-2.5); runner fails if unset/empty
@@ -48,7 +50,8 @@ jobs:
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
       CURSOR_REV_MODEL: ${{ vars.CURSOR_REV_MODEL }}
-      GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN || github.token }}
+      GH_TOKEN: ${{ github.token }}
+      REVIEWBOT_GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN }}
     steps:
       - name: Check secrets and vars
         run: |

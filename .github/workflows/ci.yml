@@ -132,8 +132,10 @@ jobs:
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
       CURSOR_REV_MODEL: ${{ vars.CURSOR_REV_MODEL }}
-      # PAT needed to Resolve conversation; GITHUB_TOKEN cannot call resolveReviewThread.
-      GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN || github.token }}
+      # Reviews/APPROVE as github-actions[bot]. Do NOT replace with a user PAT.
+      GH_TOKEN: ${{ github.token }}
+      # Classic PAT (repo) for GraphQL resolveReviewThread only.
+      REVIEWBOT_GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN }}
       REVIEWBOT_PR: ${{ github.event.pull_request.number }}
     steps:
       - name: Check secrets and vars
