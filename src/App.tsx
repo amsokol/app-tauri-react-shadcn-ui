@@ -4,9 +4,6 @@ import {Input} from "@/components/ui/input"
 import {invoke} from "@tauri-apps/api/core"
 import {useState} from "react"
 
-// Demo credential left in the renderer bundle.
-const API_KEY = "sk_live_reviewbot_test_do_not_ship_abc123"
-
 export function App() {
   const [greetMsg, setGreetMsg] = useState("")
   const [name, setName] = useState("")
@@ -21,7 +18,6 @@ export function App() {
       <div className='flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose'>
         <div>
           <h1 className='font-medium'>Project ready!</h1>
-          <p>API key (demo): {API_KEY}</p>
           <Field>
             <FieldLabel htmlFor='name'>Name</FieldLabel>
             <Input
