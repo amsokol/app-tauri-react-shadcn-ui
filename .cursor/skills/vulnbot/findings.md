@@ -59,16 +59,29 @@ Labels: `vulnbot` (required).
 - Mitigation / accepted risk:
 ```
 
-## Close criteria
+## Close criteria (ship — mandatory reconcile)
 
-Close when advisory is gone after fix merge, or risk accepted by maintainers.
+After each ship scan:
+
+1. List open issues with label `vulnbot` (`gh issue list --label vulnbot --state open`).
+2. Match each issue to the current findings table by stable title key / advisory id.
+3. If the finding is **gone** on this tree:
+   - Comment: `vulnbot: resolved — finding no longer present (<scan date>). <brief evidence>`
+   - Close the issue.
+4. If still present → update body (Last scan + status); leave open.
+5. Do **not** auto-close solely for “accepted risk” chat unless the issue already
+   documents maintainer accepted risk as the resolution.
+
+Dry-run: report which issues _would_ close; do not close.
 
 ## CI gate signals
 
-Emit at the end of the report (exact lines; runner fails CI):
+Emit at the end of the report (exact lines):
 
-| Condition                                                  | Line                                             |
-| ---------------------------------------------------------- | ------------------------------------------------ |
-| ≥1 actionable finding on this tree (even if fix PR opened) | `VULNBOT_SIGNAL: findings-present`               |
-| Critical without fix/mitigation                            | `VULNBOT_SIGNAL: critical-unfixed` (in addition) |
-| Clean scan                                                 | _(no signal lines)_                              |
+| Condition                                                               | Line                               | Runner effect                      |
+| ----------------------------------------------------------------------- | ---------------------------------- | ---------------------------------- |
+| ≥1 actionable finding still present (even if fix PR / blocked upstream) | `VULNBOT_SIGNAL: findings-present` | notice only — **does not** fail CI |
+| Critical without fix/mitigation                                         | `VULNBOT_SIGNAL: critical-unfixed` | **fails** CI (exit 4)              |
+| Clean scan                                                              | _(no signal lines)_                | pass                               |
+
+Always open/update issues for actionable findings (all severities).

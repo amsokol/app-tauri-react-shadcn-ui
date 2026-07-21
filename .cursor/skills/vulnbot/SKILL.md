@@ -28,16 +28,22 @@ Policy for _this_ repo lives only in this skill folder.
 4. **Scan code** — `code-sast.md` (tool pass **and** LLM review).
 5. **Cluster findings** — `findings.md`.
 6. **Issues** — one per cluster, label `vulnbot`.
-7. **Safe fixes** (ship) — clear dep bump or minimal code change; respect
+7. **Reconcile & close** (ship only, mandatory) — `findings.md`: close open
+   `vulnbot` issues whose finding is gone; comment with evidence first.
+   Dry-run: list would-close only.
+8. **Safe fixes** (ship) — clear dep bump or minimal code change; respect
    depbot **2-day quarantine** unless security exception documented.
    Verify: `verify-migrate.md`.
-8. **Ship PR** — `pr-lifecycle.md` + `pr-style.md` when verify passes.
-9. **CI gate signals** (required; runner fails the job) — see `findings.md`:
-   - Any actionable finding → `VULNBOT_SIGNAL: findings-present` (even if fix PR opened).
-   - Critical without fix/mitigation → also `VULNBOT_SIGNAL: critical-unfixed`.
-   - Clean scan → do not emit signals.
+9. **Ship PR** — `pr-lifecycle.md` + `pr-style.md` when verify passes.
+10. **Signals** — see `findings.md`:
 
-Dry-run: plan only (no branch/PR); issues only when signaling; still emit gate signals.
+- Any actionable finding still present → `VULNBOT_SIGNAL: findings-present`
+  (informational; does **not** fail CI).
+- Critical without fix/mitigation → `VULNBOT_SIGNAL: critical-unfixed`
+  (runner **fails** CI).
+- Clean scan → do not emit signals.
+
+Dry-run: plan only (no branch/PR/close); issues only when signaling; still emit signals.
 
 ## Hard rules
 
@@ -45,6 +51,7 @@ Dry-run: plan only (no branch/PR); issues only when signaling; still emit gate s
 - Honor pnpm catalog / Cargo lock conventions (same as depbot).
 - No drive-by refactors; no inventing audit tools not in the repo.
 - Idempotent issues + one open fix PR on `security/vulnbot`.
+- Ship must reconcile open `vulnbot` issues and close resolved ones.
 
 ## Reporting (dry-run)
 
