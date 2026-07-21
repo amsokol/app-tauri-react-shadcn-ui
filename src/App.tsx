@@ -11,7 +11,7 @@ export function App() {
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    // VULNBOT-DEMO: identity keeps lodash in the graph for the intentional advisory pin
+    // Medium Part 3 demo: lodash kept in the runtime graph for the advisory finding.
     setGreetMsg(await invoke("greet", {name: identity(name)}))
   }
 
@@ -37,7 +37,7 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          {/* VULNBOT-DEMO: intentional XSS for Medium Part 3 — do not merge to main */}
+          {/* Medium Part 3 demo: intentional DOM XSS — vulnbot should issue + fix (escape / text node). */}
           <div dangerouslySetInnerHTML={{__html: greetMsg}} />
         </div>
       </div>

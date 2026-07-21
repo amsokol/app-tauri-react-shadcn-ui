@@ -34,7 +34,7 @@ catalog:
   eslint-plugin-react-refresh: =0.5.3
   globals: =17.7.0
   knip: =6.26.0
-  # VULNBOT-DEMO: intentional vulnerable pin (CVE-2021-23337 / GHSA-35jh-r3h4-6jhm) — do not merge
+  # Medium Part 3 demo: intentional vulnerable pin (GHSA-35jh-r3h4-6jhm) — vulnbot should issue + bump.
   lodash: =4.17.20
   markdownlint-cli2: =0.23.0
   prettier: =3.9.5
