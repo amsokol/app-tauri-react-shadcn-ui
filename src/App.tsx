@@ -33,8 +33,7 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          {/* Render invoke output as HTML */}
-          <div dangerouslySetInnerHTML={{__html: greetMsg}} />
+          <p>{greetMsg}</p>
         </div>
       </div>
     </div>
