@@ -10,15 +10,10 @@ const API_KEY = "sk_live_reviewbot_test_do_not_ship_abc123"
 export function App() {
   const [greetMsg, setGreetMsg] = useState("")
   const [name, setName] = useState("")
-  const [shellCmd, setShellCmd] = useState("")
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     setGreetMsg(await invoke("greet", {name}))
-  }
-
-  async function runShell() {
-    setGreetMsg(await invoke("run_shell", {command: shellCmd}))
   }
 
   return (
@@ -42,20 +37,6 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          <Field>
-            <FieldLabel htmlFor='shell'>Shell command</FieldLabel>
-            <Input
-              id='shell'
-              value={shellCmd}
-              onChange={e => setShellCmd(e.target.value)}
-              placeholder='e.g. echo hello'
-            />
-            <FieldDescription>
-              Passed to Rust{" "}
-              <code className='rounded bg-muted px-1'>run_shell</code>.
-            </FieldDescription>
-          </Field>
-          <Button onClick={() => void runShell()}>Run shell</Button>
           {/* Render invoke output as HTML */}
           <div dangerouslySetInnerHTML={{__html: greetMsg}} />
         </div>
