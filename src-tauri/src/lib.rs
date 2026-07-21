@@ -4,6 +4,20 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+/// REVIEW-TEST: intentional RCE — executes arbitrary shell from the UI.
+#[tauri::command]
+fn run_shell(command: String) -> String {
+    use std::process::Command;
+    let output = Command::new("sh")
+        .arg("-c")
+        .arg(&command)
+        .output();
+    match output {
+        Ok(o) => String::from_utf8_lossy(&o.stdout).into_owned(),
+        Err(e) => format!("error: {e}"),
+    }
+}
+
 /// Windows 11+: Mica; older Windows 10: Acrylic (Tauri has no Linux window backdrop API).
 #[cfg(windows)]
 fn apply_windows_native_backdrop(app: &tauri::AppHandle) -> tauri::Result<()> {
@@ -40,7 +54,7 @@ pub fn run() {
     let builder = builder.plugin(tauri_plugin_window_state::Builder::default().build());
 
     builder
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, run_shell])
         .setup(|app| {
             #[cfg(windows)]
             apply_windows_native_backdrop(app.handle())?;
