@@ -10,9 +10,7 @@ export function App() {
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    // REVIEW-TEST (Medium Part 1): wrong IPC arg — Rust expects `name`, not `userName`.
-    // UI looks fine; greet never receives what the user typed.
-    setGreetMsg(await invoke("greet", {userName: name}))
+    setGreetMsg(await invoke("greet", {name}))
   }
 
   return (
