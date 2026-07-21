@@ -30,33 +30,34 @@ Do not invent ecosystems that are absent.
 ## Default workflow
 
 1. **Discover** — confirm `package.json`, `pnpm-workspace.yaml`, `src-tauri/Cargo.toml`.
-2. **Node toolchain check** — verify single Node **24** everywhere (`node-toolchain.md`).
+2. **PR sync (ship)** — if an open daily PR exists, merge `origin/main` into `deps/depbot`
+   **before** scanning (`pr-lifecycle.md`). Dry-run: do not mutate git; still note the rule.
+3. **Node toolchain check** — verify single Node **24** everywhere (`node-toolchain.md`).
    Any drift → **FORBIDDEN** signal; never auto-bump Node.
-3. **Rust toolchain check** — verify lockstep pins + eligible **patch** (`rust-toolchain.md`).
+4. **Rust toolchain check** — verify lockstep pins + eligible **patch** (`rust-toolchain.md`).
    Drift → **FORBIDDEN**; new train (`1.Y` → `1.Y+1`) → blocked without OK.
-4. **Comment pass** — mandatory (`dep-comments.md`). Search `depbot:`, holds, lockstep notes.
-5. **Coupled bundles** — discover `depbot: bundle` / lockstep (`coupled-deps.md`).
-6. **Scan**
+5. **Comment pass** — mandatory (`dep-comments.md`). Search `depbot:`, holds, lockstep notes.
+6. **Coupled bundles** — discover `depbot: bundle` / lockstep (`coupled-deps.md`).
+7. **Scan**
    - pnpm: `pnpm.md` (outdated against **catalog**)
    - Cargo crates: `cargo.md`
    - Rust compiler patch: `rust-toolchain.md`
-7. **Quarantine filter** — (`quarantine.md`):
+8. **Quarantine filter** — (`quarantine.md`):
    - Drop/defer candidates younger than **2 days**.
    - **Audit current pins:** any already-pinned version younger than 2 days is
      **FORBIDDEN** — signal under **Quarantine violations**; propose rollback (do not ignore).
    - Prefer the newest eligible version that already cleared the window.
-8. **Reconcile** — unlock/bump per comment + bundle rules; never partial-unlock a bundle.
-9. **Plan** — groups (`grouping.md`). Dry-run: stop here if user asked plan-only.
-10. **Research** majors / high-risk (Tauri, React, Vite, TypeScript): release notes, break risk.
-11. **Apply** — edit catalog / Cargo pins / Rust toolchain lockstep; refresh lockfiles;
+9. **Reconcile** — unlock/bump per comment + bundle rules; never partial-unlock a bundle.
+10. **Plan** — groups (`grouping.md`). Dry-run: stop here if user asked plan-only.
+11. **Research** majors / high-risk (Tauri, React, Vite, TypeScript): release notes, break risk.
+12. **Apply** — edit catalog / Cargo pins / Rust toolchain lockstep; refresh lockfiles;
     refresh stale `depbot:` comments.
     Remediate **FORBIDDEN** quarantine pins only when the user asked to fix them.
     Never change Node toolchain files.
-12. **Verify & migrate** — required on ship (`verify-migrate.md`): run the verify ladder;
+13. **Verify & migrate** — required on ship (`verify-migrate.md`): run the verify ladder;
     on failure, minimal migration fixes (max 4 rounds) or roll back offenders; re-verify.
     Dry-run: skip apply/verify.
-13. **Ship** — only if asked (or scheduled ship mode): follow `pr-lifecycle.md`
-    (reuse/update daily PR `deps/depbot`, noop if unchanged) + `pr-style.md`.
+14. **Ship** — finish `pr-lifecycle.md` + `pr-style.md` (create / update / noop).
     Include migration commits on the same PR. Do not open/update a PR as “done” if verify failed
     unless remaining work is explicitly marked needs-human after rollback to green.
     Dry-run / plan-only: stop after the plan — no branch/PR.

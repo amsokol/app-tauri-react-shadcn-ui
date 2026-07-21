@@ -15,110 +15,135 @@ Default scheduled run uses the **daily** track only unless the user asks otherwi
 Identify an existing PR by: open state + label `depbot` + head branch matching the track
 (prefer `gh pr list --label depbot --state open` and filter by branch).
 
+## Sync strategy (hybrid)
+
+| Situation                              | Strategy                                                                 |
+| -------------------------------------- | ------------------------------------------------------------------------ |
+| No open PR (or previous closed/merged) | **Recreate** track branch from `origin/main` (§A)                        |
+| Open PR, branch healthy                | **Merge** `origin/main` into track branch **before** scan (§1 / §B / §C) |
+| Open PR + recreate trigger (below)     | **Close + recreate** (§R), then scan/apply on the new branch             |
+
+Default for a normal open PR: **merge-first**, not close+recreate every run.
+Preserve review history unless a recreate trigger fires.
+
+### Recreate triggers (any one → §R)
+
+Use close+recreate when **any** of:
+
+1. **Merge conflict** with `origin/main` (do not leave a half-merged tree).
+2. Track branch tip is **> 14 days** behind `origin/main` (by commit date or first-parent age).
+3. Previous run left the PR **blocked** for rebase / unusable branch (§D).
+4. User / workflow explicitly asked to recreate (`strategy=recreate` or clear instruction).
+5. Branch history is clearly corrupted (missing branch, wrong head, force-push wreckage).
+
+When recreating: comment on the old PR `depbot: superseded — recreating track from main`,
+close it, delete remote track branch if needed, then §A (new PR).
+
 ## Algorithm (each run that is allowed to open/update PRs)
 
-1. Compute the **desired change-set** for this track (after comments, quarantine, Node checks, bundles).
-2. If desired change-set is **empty** → log `noop — nothing eligible`; do not open a PR.
-3. Find **open** PR for this track.
-4. Compare desired tree to the PR branch tip (or to `main` if no PR).
+**Order:** decide merge vs recreate → sync branch → **then** scan deps.
+
+0. `git fetch origin`. Find **open** PR for this track (`depbot` + `deps/depbot`).
+1. **If open PR exists:**
+   - If a **recreate trigger** matches → §R, then continue from the new branch.
+   - Else **merge-first** before any dep scan:
+     - `git checkout deps/depbot`
+     - `git merge origin/main`
+     - Conflicts → treat as recreate trigger **(1)** → §R (preferred) **or** stop with
+       `blocked — needs human` only if recreate is impossible (no permission). Prefer §R.
+     - Push merge when convenient; do not scan while still behind `main`.
+2. **Then** discovery / comments / quarantine / scans / plan (desired change-set).
+3. If desired change-set is **empty** and there is no open PR → `noop — nothing eligible`.
+4. Compare desired tree to the synced PR tip, or to `main` if no PR.
+
+### R) Close + recreate (triggered)
+
+1. Comment on open PR: `depbot: superseded — recreating track from main (<reason>)`.
+2. `gh pr close <n>` (do not merge).
+3. Delete remote track branch if it still exists:
+   `git push origin --delete deps/depbot` (best effort).
+4. Follow **§A** (fresh branch + new PR).
+5. Log: `recreated — PR #<old> closed; PR #<new> from main (<reason>)`.
 
 ### A) No open PR (including after a closed/merged PR)
 
-**Stale track branches are expected** (GitHub often keeps `deps/depbot` after the PR is closed).
-Do **not** continue from that tip — it may contain an old batch.
+**Stale track branches are expected** after close. Do **not** continue from that tip.
 
-Mandatory reset procedure:
-
-1. `git fetch origin` and update local `main` (`origin/main`).
-2. Recreate the track branch **exactly from** `origin/main`:
-   `git checkout -B deps/depbot origin/main`
-3. If `origin/deps/depbot` still exists and differs from this new tip, publish with a
-   **narrow force-with-lease** (allowed only in this case — see Hard rules):
-   `git push --force-with-lease origin deps/depbot`
-   Prefer deleting the remote branch first when you have permission:
-   `git push origin --delete deps/depbot`, then a normal push of the new branch.
-4. Apply the **full desired change-set** on this clean branch (do not reuse old bump commits).
-5. Run **verify & migrate**; commit; push (normal push).
+1. Update local `main` from `origin/main`.
+2. `git checkout -B deps/depbot origin/main`
+3. If `origin/deps/depbot` still exists and differs, publish with
+   **`--force-with-lease`** (only with **no** open track PR) or delete-then-push.
+4. Apply the **full desired change-set** (do not reuse old bump commits).
+5. **Verify & migrate**; commit; push (normal).
 6. `gh pr create` with label `depbot`.
-
-Never: `git checkout deps/depbot` on a leftover remote tip and “add a few more bumps”.
 
 ### B) Open PR exists, desired == already in PR (no new changes)
 
-- **Do not** push empty commits.
-- **Do not** close/reopen the PR.
+(After successful merge-from-main; bumps unchanged:)
+
+- Push the merge if needed.
+- No empty “activity” commits beyond the merge.
 - Log: `noop — PR #<n> already up to date`.
-- Optional: comment on the PR **at most once per 7 days** (`still current as of <date>`); skip if a recent identical bot comment exists.
+- Optional comment at most once per 7 days.
 - Exit success.
 
-### C) Open PR exists, desired differs (new / removed / changed bumps)
+### C) Open PR exists, desired differs
 
-- Checkout the **same** track branch (`deps/depbot`).
-- Merge or rebase `main` into the branch if behind (prefer merge if unsure).
-  - If conflicts cannot be resolved safely → stop; comment on the PR:
-    `depbot: needs human rebase (conflicts with main)`; do **not** force-merge.
-- Apply the full desired change-set for this track (replace stale bumps; drop items that
-  became wait/blocked/FORBIDDEN).
-- Run **verify & migrate** (`verify-migrate.md`) before treating the PR as ready; include
-  migration or rollback commits on this branch.
-- Create a **new commit** (do not amend published history; no force-push by default).
-- Push; update PR title/body to match the new table (include Verify & migrate).
-- Short PR comment: what was **added**, **removed**, migrated, or moved to wait/blocked since last run.
+(Branch already contains `origin/main` from merge-first.)
+
+- Apply full desired change-set; drop wait/blocked/FORBIDDEN items.
+- **Verify & migrate**; new commit (no amend of published history; no force-push).
+- Push; refresh PR title/body; short comment of added/removed/migrated.
 
 ### D) Open PR but branch missing / unusable
 
-- Recreate the branch from `main`, push, and update the existing PR head if `gh` allows;
-  otherwise close the broken PR with comment `superseded` and open a new one on the track branch.
+- Recreate trigger **(5)** → §R.
 
 ### E) Previous PR merged or closed
 
-- Treat as **no open PR** → follow **§A** (always recreate track branch from `main`).
-- Do not reopen the closed PR; open a **new** PR for the new batch.
-- Closed-PR comments are optional (`superseded by new run` only if useful).
+- Treat as **no open PR** → §A.
 
 ### F) Multiple open `depbot` PRs on the same track
 
-- Keep the newest; close others with comment `duplicate depbot PR — use #<n>`.
+- Keep the newest; close others: `duplicate depbot PR — use #<n>`.
 
 ### G) `main` already contains the PR contents
 
-- Close PR with comment `superseded by main` (or leave open only if commits remain unique).
-- Log noop for bumps.
+- Close PR: `superseded by main`. Log noop for bumps.
 
 ## Hard rules
 
 - Never empty-push “activity” commits.
 - Never silent-skip a **FORBIDDEN** Node drift or quarantine violation — report even on noop bump days.
-- Never mix high-impact **majors** into the daily track PR unless the user explicitly asked for one combined PR.
+- Never mix high-impact **majors** into the daily track PR unless the user explicitly asked.
   Patch/minor of Vite/React/Tauri/TypeScript **belong on daily** (`grouping.md`).
 - Never `git clean` / `reset --hard` of **unrelated** worktrees or user branches.
-- **`git push --force` is forbidden** except this single automation case:
-  - **No open** track PR, and you are replacing `origin/deps/depbot` (or `deps/depbot-<topic>`)
-    so it matches a brand-new branch created from `origin/main` for a fresh batch.
-  - Prefer `git push --force-with-lease` or delete-then-push.
-  - **Never** force-push while an open depbot PR still points at that branch (use §C instead).
-- Prefer updating **one** open daily PR in place over opening a second.
+- **`git push --force` is forbidden** except:
+  - **No open** track PR, replacing `origin/deps/depbot` (or topic branch) to match a
+    brand-new branch from `origin/main` (§A / §R).
+  - Prefer `--force-with-lease` or delete-then-push.
+  - **Never** force-push while an open depbot PR still points at that branch
+    (close via §R first, then recreate).
+- Prefer **one** open daily PR; merge-first unless a recreate trigger fires.
 
 ## Logging (cron-friendly)
-
-Always print one of:
 
 ```text
 noop — nothing eligible
 noop — PR #123 already up to date
 updated — PR #123 (added: …; removed: …)
 created — PR #123 (track branch reset from main)
+recreated — PR #122 closed; PR #123 from main (conflict|age|blocked|user)
 blocked — needs human rebase on PR #123
 ```
 
 ## Reporting in plan / PR body
 
-When a run touches lifecycle, mention:
-
 ```markdown
 ## PR lifecycle
 
 - Track: daily (`deps/depbot`)
-- Action: created | updated | noop (up to date) | noop (nothing eligible) | blocked (rebase)
+- Strategy: merge-first | recreate | n/a (no open PR)
+- Action: created | updated | noop | recreated | blocked
 - PR: <url or none>
 ```
