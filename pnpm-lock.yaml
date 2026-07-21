@@ -81,6 +81,9 @@ catalogs:
     knip:
       specifier: '=6.26.0'
       version: 6.26.0
+    lodash:
+      specifier: '=4.17.20'
+      version: 4.17.20
     markdownlint-cli2:
       specifier: '=0.23.0'
       version: 0.23.0
@@ -166,6 +169,9 @@ importers:
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
+      lodash:
+        specifier: 'catalog:'
+        version: 4.17.20
       react:
         specifier: 'catalog:'
         version: 19.2.7
@@ -2743,6 +2749,9 @@ packages:
 
   lodash.truncate@4.4.2:
     resolution: {integrity: sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw==}
+
+  lodash@4.17.20:
+    resolution: {integrity: sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==}
 
   log-symbols@6.0.0:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
@@ -6204,6 +6213,8 @@ snapshots:
       p-locate: 5.0.0
 
   lodash.truncate@4.4.2: {}
+
+  lodash@4.17.20: {}
 
   log-symbols@6.0.0:
     dependencies:

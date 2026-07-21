@@ -2,6 +2,7 @@ import {Button} from "@/components/ui/button"
 import {Field, FieldDescription, FieldLabel} from "@/components/ui/field"
 import {Input} from "@/components/ui/input"
 import {invoke} from "@tauri-apps/api/core"
+import {identity} from "lodash"
 import {useState} from "react"
 
 export function App() {
@@ -10,7 +11,8 @@ export function App() {
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", {name}))
+    // VULNBOT-DEMO: identity keeps lodash in the graph for the intentional advisory pin
+    setGreetMsg(await invoke("greet", {name: identity(name)}))
   }
 
   return (
@@ -35,7 +37,8 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          <p>{greetMsg}</p>
+          {/* VULNBOT-DEMO: intentional XSS for Medium Part 3 — do not merge to main */}
+          <div dangerouslySetInnerHTML={{__html: greetMsg}} />
         </div>
       </div>
     </div>
