@@ -35,8 +35,7 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          {/* REVIEW-TEST: intentional XSS for reviewbot screenshot */}
-          <div dangerouslySetInnerHTML={{__html: greetMsg}} />
+          <p>{greetMsg}</p>
         </div>
       </div>
     </div>
