@@ -116,3 +116,65 @@ jobs:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
         run: uv run vulnbot-ship --yes
+
+  reviewbot:
+    name: Reviewbot ship (PR review)
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+      CURSOR_REV_MODEL: ${{ vars.CURSOR_REV_MODEL }}
+      GH_TOKEN: ${{ github.token }}
+      REVIEWBOT_PR: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Check secrets and vars
+        run: |
+          set -euo pipefail
+          if [ -z "${CURSOR_API_KEY:-}" ]; then
+            echo "::error::Missing secret CURSOR_API_KEY"
+            exit 1
+          fi
+          if [ -z "${CURSOR_REV_MODEL:-}" ]; then
+            echo "::error::Missing variable CURSOR_REV_MODEL"
+            exit 1
+          fi
+          echo "CURSOR_REV_MODEL=$CURSOR_REV_MODEL REVIEWBOT_PR=$REVIEWBOT_PR"
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Setup toolchain
+        uses: ./.github/actions/setup-toolchain
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: false
+
+      - name: Install reviewbot runner
+        env:
+          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch "$RUNNER_REF" \
+            https://github.com/amsokol/ai-devsecops-cursor.git \
+            "${{ runner.temp }}/ai-devsecops-cursor"
+          cd "${{ runner.temp }}/ai-devsecops-cursor"
+          uv sync --frozen
+
+      - name: Reviewbot ship
+        working-directory: ${{ runner.temp }}/ai-devsecops-cursor
+        env:
+          DEPBOT_TARGET: ${{ github.workspace }}
+          TARGET_ID: ${{ github.repository }}
+          REVIEWBOT_PR: ${{ github.event.pull_request.number }}
+        run: uv run reviewbot-ship --pr "$REVIEWBOT_PR" --yes
