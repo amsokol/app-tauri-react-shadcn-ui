@@ -29,7 +29,7 @@ mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.3.2" }
 # Private APIs can affect Mac App Store / notarization — revisit before distribution.
 tauri = { version = "2.11.5", features = ["macos-private-api"] }
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.150"
+serde_json = "1.0.151"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 # depbot: bundle tauri-stack — member: window-state plugin (keep on Tauri 2.x train)
