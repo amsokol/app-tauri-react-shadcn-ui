@@ -1,48 +1,31 @@
-# Agent policy
+# Agent policy — app-tauri-react-shadcn-ui
 
-What “good” means for **this** product (Tauri + React + pnpm). Runner scenarios
-(`pr_gate`, `main_maintain`) are generic; this file is product-specific.
+Tauri + React + pnpm + Cargo. Shared procedures:
+[`library/policy/entry.md`](library/policy/entry.md).
 
-Quarantine duration must stay aligned with `pnpm-workspace.yaml`
-(`minimumReleaseAge`).
+Overlay only: this file, [`verify.md`](verify.md), [`quarantine.md`](quarantine.md).
 
-## Gate (`pr_gate`)
+## Enabled ecosystems
 
-- Block correctness bugs and security-relevant defects in the PR diff.
-- Dependency policy applies to **changed** pins / lockfile entries only
-  (`pnpm-workspace.yaml` catalog, `pnpm-lock.yaml`, `src-tauri/Cargo.toml` /
-  `Cargo.lock`, toolchain pins).
-- **Release quarantine (approach):** do not adopt a version until it has been
-  published for at least **N days** (duration below). Younger pins are policy
-  breaches (FORBIDDEN on current pins; wait on candidates). Document any
-  security exception that bypasses the window.
-- Majors / new trains of high-impact frameworks need explicit human OK (or an
-  unlock comment): Tauri, React, Vite, Node, Rust minor/major trains.
-- Verdict only: no Issues / fix PRs from gate.
+Only listed ecosystems are in scope for deps-policy / deps-vuln. Read all topics
+under each folder (`detect`, `update`, `publish-time`, `advisories`, `caution`).
 
-### Quarantine duration (this product)
+- [`library/ecosystems/npm/detect.md`](library/ecosystems/npm/detect.md)
+  (pnpm catalog / lockfile)
+- [`library/ecosystems/cargo/detect.md`](library/ecosystems/cargo/detect.md)
 
-| Setting          | Value                                                                    |
-| ---------------- | ------------------------------------------------------------------------ |
-| Quarantine       | **2 days** (48 hours)                                                    |
-| pnpm enforcement | `minimumReleaseAge: 2880` minutes in `pnpm-workspace.yaml` (same window) |
+## Hotspots
 
-Do not lower or disable `minimumReleaseAge` unless the policy owner explicitly
-overrides it here and in `pnpm-workspace.yaml` together.
+- Frontend: `src/`, `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`
+- Tauri/Rust: `src-tauri/`, `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`,
+  `rust-toolchain.toml`
+- Existing `depbot:` / `agent:` holds and bundles (e.g. `tauri-stack`, `mimalloc`)
 
-## Maintain (`main_maintain`)
+## Product notes
 
-- Scan the full repo: code hotspots + dependency graph (pnpm catalog, Cargo,
-  toolchains).
-- Enforce the **same** quarantine approach and duration as gate when proposing
-  bumps.
-- Open Issues for actionable findings; fix PR when remediation verifies.
-- Reconcile against **this checkout only**.
-- Never APPROVE product pull requests.
-
-## Overrides
-
-- `# agent: hold — <reason>` (or historical `# depbot: hold — <reason>`) near a
-  pin: do not bump until unlock conditions are met.
-- Explicit accepted-risk comments may clear **non-critical** gate findings;
-  critical and policy FORBIDDEN states need a documented exception.
+- Gate: changed pins in catalog / `pnpm-lock.yaml` / `package.json` /
+  `src-tauri/Cargo.toml` / `Cargo.lock` / toolchain pins when touched
+- High-impact majors need human OK or unlock: Tauri, React, Vite, Node, Rust
+  minor/major trains
+- Keep quarantine duration aligned with `pnpm-workspace.yaml`
+  (`minimumReleaseAge`)

@@ -23,7 +23,9 @@ From the **repo root**, after `pnpm install`:
 
 **shadcn UI:** generated files under `src/components/ui/` are excluded from ESLint, Prettier, and knip (re-add components with the shadcn CLI rather than hand-linting them).
 
-**CI:** GitHub Actions (`.github/workflows/ci.yml`) runs `format:check`, `lint:all`, `typecheck`, `security:audit` (non-blocking while transitive advisories remain), and `pnpm build` on **Ubuntu**, **macOS**, and **Windows** for pushes and pull requests to `main`. On pull requests, **Agent gate (PR review)** runs the unified DevSecOps gate (`agent-gate`). On push to `main`, **Agent maintain (main)** runs `agent-maintain`. Policy: `.cursor/agent/POLICY.md`.
+**CI:** GitHub Actions (`.github/workflows/ci.yml`) runs `format:check`, `lint:all`, `typecheck`, `security:audit` (non-blocking while transitive advisories remain), and `pnpm build` on **Ubuntu**, **macOS**, and **Windows** for pushes and pull requests to `main`.
+
+**Agent gate** (`.github/workflows/agent-gate.yml`): on PR open/sync/reopen **and** on **human** PR conversation / review-thread comments, runs `agent-gate` as `github-actions[bot]` (latest run cancels prior; bot comments do not re-trigger). **Agent maintain** on push to `main` runs `agent-maintain`. Policy overlay: `.cursor/agent/` + skills submodule `.cursor/agent/library` ([ai-devsecops-skills](https://github.com/amsokol/ai-devsecops-skills) @ `v0.1.1`).
 
 **In the editor:** this repo includes `.vscode/settings.json` (workspace-only) so **Prettier formats on save** and **ESLint can fix issues on save** while this folder is open. Install the **recommended extensions** when prompted, or open the Extensions view and accept the suggestions from `.vscode/extensions.json` (Prettier, ESLint, Stylelint, Markdownlint).
 
