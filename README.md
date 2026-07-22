@@ -56,3 +56,7 @@ This is intentional: the fork tracks mimalloc 3.x with edition 2024 bindings. Pr
 ```bash
 pnpm dlx shadcn@latest add button field input label separator --overwrite -y
 ```
+
+## Agent chat smoke test
+
+Open PR comment thread — gate should reply as `github-actions[bot]`.
