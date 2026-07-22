@@ -44,7 +44,7 @@ JS dependencies use **pnpm** [`minimumReleaseAge`](https://pnpm.io/settings) in 
 The Rust binary uses [Microsoft mimalloc](https://github.com/microsoft/mimalloc) via the project-maintained bindings at [`amsokol/mimalloc`](https://github.com/amsokol/mimalloc), pinned by **git tag** (not crates.io):
 
 ```toml
-mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.4.1" }
+mimalloc = { git = "https://github.com/amsokol/mimalloc", tag = "v3.4.3" }
 ```
 
 This is intentional: the fork tracks mimalloc 3.x with edition 2024 bindings. Prefer bumping the **tag** (and refreshing `Cargo.lock`) over switching to crates.io unless those bindings are published there.
