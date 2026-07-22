@@ -3,10 +3,8 @@
 What “good” means for **this** product (Tauri + React + pnpm). Runner scenarios
 (`pr_gate`, `main_maintain`) are generic; this file is product-specific.
 
-Legacy bot skills under `.cursor/skills/{depbot,vulnbot,reviewbot}/` remain until
-migration; when they conflict with this file, **this file wins** for the unified
-agent. Quarantine duration must stay aligned with `pnpm-workspace.yaml`
-(`minimumReleaseAge`) and `.cursor/skills/depbot/quarantine.md`.
+Quarantine duration must stay aligned with `pnpm-workspace.yaml`
+(`minimumReleaseAge`).
 
 ## Gate (`pr_gate`)
 
@@ -44,7 +42,7 @@ overrides it here and in `pnpm-workspace.yaml` together.
 
 ## Overrides
 
-- `# agent: hold — <reason>` or `# depbot: hold — <reason>` near a pin: do not
-  bump until unlock conditions are met.
+- `# agent: hold — <reason>` (or historical `# depbot: hold — <reason>`) near a
+  pin: do not bump until unlock conditions are met.
 - Explicit accepted-risk comments may clear **non-critical** gate findings;
   critical and policy FORBIDDEN states need a documented exception.

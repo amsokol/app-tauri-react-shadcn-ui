@@ -23,7 +23,7 @@ From the **repo root**, after `pnpm install`:
 
 **shadcn UI:** generated files under `src/components/ui/` are excluded from ESLint, Prettier, and knip (re-add components with the shadcn CLI rather than hand-linting them).
 
-**CI:** GitHub Actions (`.github/workflows/ci.yml`) runs `format:check`, `lint:all`, `typecheck`, `security:audit` (non-blocking while transitive advisories remain), and `pnpm build` on **Ubuntu**, **macOS**, and **Windows** for pushes and pull requests to `main`. On pull requests, **Agent gate (PR review)** runs the unified DevSecOps gate (`agent-gate` from [ai-devsecops-cursor](https://github.com/amsokol/ai-devsecops-cursor)) using `.cursor/agent/POLICY.md`.
+**CI:** GitHub Actions (`.github/workflows/ci.yml`) runs `format:check`, `lint:all`, `typecheck`, `security:audit` (non-blocking while transitive advisories remain), and `pnpm build` on **Ubuntu**, **macOS**, and **Windows** for pushes and pull requests to `main`. On pull requests, **Agent gate (PR review)** runs the unified DevSecOps gate (`agent-gate`). On push to `main`, **Agent maintain (main)** runs `agent-maintain`. Policy: `.cursor/agent/POLICY.md`.
 
 **In the editor:** this repo includes `.vscode/settings.json` (workspace-only) so **Prettier formats on save** and **ESLint can fix issues on save** while this folder is open. Install the **recommended extensions** when prompted, or open the Extensions view and accept the suggestions from `.vscode/extensions.json` (Prettier, ESLint, Stylelint, Markdownlint).
 
