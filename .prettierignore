@@ -1,4 +1,5 @@
 node_modules/
+.cursor/agent/library/
 coverage/
 .pnpm-store/
 dist/
