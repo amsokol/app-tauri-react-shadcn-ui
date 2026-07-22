@@ -119,8 +119,8 @@ jobs:
           TARGET_ID: ${{ github.repository }}
         run: uv run vulnbot-ship --yes
 
-  reviewbot:
-    name: Reviewbot ship (PR review)
+  agent-gate:
+    name: Agent gate (PR review)
     if: >
       github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository
@@ -131,11 +131,12 @@ jobs:
       pull-requests: write
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_REV_MODEL: ${{ vars.CURSOR_REV_MODEL }}
+      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL != '' && vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL }}
       # Reviews/APPROVE as github-actions[bot]. Do NOT replace with a user PAT.
       GH_TOKEN: ${{ github.token }}
       # Classic PAT (repo) for GraphQL resolveReviewThread only.
       REVIEWBOT_GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN }}
+      AGENT_PR: ${{ github.event.pull_request.number }}
       REVIEWBOT_PR: ${{ github.event.pull_request.number }}
     steps:
       - name: Check secrets and vars
@@ -145,11 +146,11 @@ jobs:
             echo "::error::Missing secret CURSOR_API_KEY"
             exit 1
           fi
-          if [ -z "${CURSOR_REV_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_REV_MODEL"
+          if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
+            echo "::error::Missing variable CURSOR_AGENT_MODEL (or CURSOR_REV_MODEL fallback)"
             exit 1
           fi
-          echo "CURSOR_REV_MODEL=$CURSOR_REV_MODEL REVIEWBOT_PR=$REVIEWBOT_PR"
+          echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL AGENT_PR=$AGENT_PR"
 
       - name: Checkout
         uses: actions/checkout@v5
@@ -157,15 +158,12 @@ jobs:
           fetch-depth: 0
           token: ${{ github.token }}
 
-      - name: Setup toolchain
-        uses: ./.github/actions/setup-toolchain
-
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: false
 
-      - name: Install reviewbot runner
+      - name: Install agent runner
         env:
           RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
         run: |
@@ -176,10 +174,11 @@ jobs:
           cd "${{ runner.temp }}/ai-devsecops-cursor"
           uv sync --frozen
 
-      - name: Reviewbot ship
+      - name: Agent-gate ship
         working-directory: ${{ runner.temp }}/ai-devsecops-cursor
         env:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
+          AGENT_PR: ${{ github.event.pull_request.number }}
           REVIEWBOT_PR: ${{ github.event.pull_request.number }}
-        run: uv run reviewbot-ship --pr "$REVIEWBOT_PR" --yes
+        run: uv run agent-gate --pr "$AGENT_PR"
