@@ -14,7 +14,7 @@
 #   Variable AGENT_GATE_MODEL (fallback: CURSOR_AGENT_MODEL, CURSOR_REV_MODEL, …)
 #   Secret AGENT_GATE_GH_TOKEN — optional classic PAT (`repo`) for
 #     GraphQL resolveReviewThread only (fallback: AGENT_GH_TOKEN)
-#   Variable AGENT_RUNNER_REF — optional pin of amsokol/ai-devsecops-cursor (default: main)
+#   Variable AGENT_RUNNER_REF — optional pin of amsokol/ai-devsecops-cursor (default: v0.3.0)
 #
 # Identity: GH_TOKEN is always github.token → reviews as github-actions[bot].
 #
@@ -140,7 +140,7 @@ jobs:
 
       - name: Install agent runner
         env:
-          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || 'v0.3.0' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
