@@ -58,7 +58,7 @@ jobs:
       issues: write
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      AGENT_MAINTAIN_MODEL: ${{ vars.AGENT_MAINTAIN_MODEL || vars.CURSOR_AGENT_MODEL }}
+      AGENT_MAINTAIN_MODEL: ${{ vars.AGENT_MAINTAIN_MODEL || vars.CURSOR_AGENT_MODEL || vars.CURSOR_DEP_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
       AGENT_SCM: github
       GH_TOKEN: ${{ github.token }}
       GIT_AUTHOR_NAME: agent
@@ -74,7 +74,7 @@ jobs:
             exit 1
           fi
           if [ -z "${AGENT_MAINTAIN_MODEL:-}" ]; then
-            echo "::error::Missing variable AGENT_MAINTAIN_MODEL (or CURSOR_AGENT_MODEL)"
+            echo "::error::Missing variable AGENT_MAINTAIN_MODEL (or CURSOR_*_MODEL fallback)"
             exit 1
           fi
           echo "AGENT_MAINTAIN_MODEL=$AGENT_MAINTAIN_MODEL"

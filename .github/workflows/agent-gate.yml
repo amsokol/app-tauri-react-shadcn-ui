@@ -11,7 +11,7 @@
 #
 # Credentials:
 #   Secret CURSOR_API_KEY
-#   Variable AGENT_GATE_MODEL (fallback: CURSOR_AGENT_MODEL)
+#   Variable AGENT_GATE_MODEL (fallback: CURSOR_AGENT_MODEL, CURSOR_REV_MODEL, …)
 #   Secret AGENT_GATE_GH_TOKEN — optional classic PAT (`repo`) for
 #     GraphQL resolveReviewThread only (fallback: AGENT_GH_TOKEN)
 #   Variable AGENT_RUNNER_REF — optional pin of amsokol/ai-devsecops-cursor (default: main)
@@ -81,7 +81,7 @@ jobs:
     timeout-minutes: 90
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      AGENT_GATE_MODEL: ${{ vars.AGENT_GATE_MODEL || vars.CURSOR_AGENT_MODEL }}
+      AGENT_GATE_MODEL: ${{ vars.AGENT_GATE_MODEL || vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL || vars.CURSOR_DEP_MODEL }}
       AGENT_SCM: github
       GH_TOKEN: ${{ github.token }}
       AGENT_GATE_GH_TOKEN: ${{ secrets.AGENT_GATE_GH_TOKEN || secrets.AGENT_GH_TOKEN }}
@@ -120,7 +120,7 @@ jobs:
             exit 1
           fi
           if [ -z "${AGENT_GATE_MODEL:-}" ]; then
-            echo "::error::Missing variable AGENT_GATE_MODEL (or CURSOR_AGENT_MODEL)"
+            echo "::error::Missing variable AGENT_GATE_MODEL (or CURSOR_*_MODEL fallback)"
             exit 1
           fi
           echo "AGENT_GATE_MODEL=$AGENT_GATE_MODEL pr=${{ steps.pr.outputs.number }}"
