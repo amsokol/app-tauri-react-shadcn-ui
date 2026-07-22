@@ -10,7 +10,13 @@ export function App() {
 
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", {name}))
+    // Intentionally broken for agent-gate inline-thread smoke-test (do not merge):
+    // 1) unsafe eval of user input (code-vuln)
+    // 2) ignores typed name and always greets a wrong fixed value (code-quality)
+    // eslint-disable-next-line no-eval, @typescript-eslint/no-unsafe-call
+    const _ignored = eval(`"${name}"`)
+    void _ignored
+    setGreetMsg(await invoke("greet", {name: "always-wrong"}))
   }
 
   return (
