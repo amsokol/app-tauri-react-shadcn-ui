@@ -1,26 +1,27 @@
-# Manual vulnerability scans via Cursor Agent SDK (ai-devsecops-cursor).
-# Auto CI: ci.yml vulnbot job on push to main only (not on PRs).
-# Trigger: Actions → vulnbot → Run workflow (dry-run | ship).
+# Manual maintain run via Cursor Agent SDK (agent-maintain / main_maintain).
+# Also runs automatically on push to main in ci.yml (ship → Issues / fix PRs).
+# Trigger: Actions → agent-maintain → Run workflow (dry-run | ship).
 #
 # Repo secrets:
 #   CURSOR_API_KEY — Cursor Dashboard → Integrations
 #
 # Repo variables:
-#   CURSOR_VUL_MODEL — required (e.g. composer-2.5); runner fails if unset/empty
-#   DEPBOT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main)
+#   CURSOR_AGENT_MODEL — preferred (e.g. composer-2.5)
+#   CURSOR_REV_MODEL / CURSOR_VUL_MODEL — fallbacks if unset
+#   AGENT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main);
+#     legacy DEPBOT_RUNNER_REF is still accepted
 #
 # Repo Settings → Actions → General → Workflow permissions:
-#   - Read and write permissions (or keep workflow `permissions:` below)
 #   - ✅ Allow GitHub Actions to create and approve pull requests
-#     (without this, ship pushes security/vulnbot but `gh pr create` fails)
+#     (required for fix PRs)
 
-name: vulnbot
+name: agent-maintain
 
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "dry-run (plan + optional issues) or ship (issues + optional fix PR)"
+        description: "dry-run (plan only) or ship (Issues / fix PRs / reconcile)"
         required: true
         type: choice
         options:
@@ -29,8 +30,8 @@ on:
         default: dry-run
 
 concurrency:
-  group: vulnbot
-  cancel-in-progress: false
+  group: agent-maintain
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -38,16 +39,16 @@ permissions:
   issues: write
 
 jobs:
-  vulnbot:
+  agent-maintain:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_VUL_MODEL: ${{ vars.CURSOR_VUL_MODEL }}
+      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
       GH_TOKEN: ${{ github.token }}
-      GIT_AUTHOR_NAME: vulnbot
+      GIT_AUTHOR_NAME: agent
       GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-      GIT_COMMITTER_NAME: vulnbot
+      GIT_COMMITTER_NAME: agent
       GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
     steps:
       - name: Check secrets and vars
@@ -57,11 +58,11 @@ jobs:
             echo "::error::Missing secret CURSOR_API_KEY"
             exit 1
           fi
-          if [ -z "${CURSOR_VUL_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_VUL_MODEL (Settings → Secrets and variables → Actions → Variables)"
+          if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
+            echo "::error::Missing variable CURSOR_AGENT_MODEL (or REV/VUL fallback)"
             exit 1
           fi
-          echo "CURSOR_VUL_MODEL=$CURSOR_VUL_MODEL"
+          echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL"
 
       - name: Checkout
         uses: actions/checkout@v5
@@ -84,12 +85,11 @@ jobs:
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
         with:
-          # Lockfile lives in the cloned runner under $RUNNER_TEMP, not this repo.
           enable-cache: false
 
-      - name: Install vulnbot runner
+      - name: Install agent runner
         env:
-          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || vars.DEPBOT_RUNNER_REF || 'main' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
@@ -98,18 +98,18 @@ jobs:
           cd "${{ runner.temp }}/ai-devsecops-cursor"
           uv sync --frozen
 
-      - name: Vulnbot dry-run
+      - name: Agent-maintain dry-run
         if: inputs.mode == 'dry-run'
         working-directory: ${{ runner.temp }}/ai-devsecops-cursor
         env:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
-        run: uv run vulnbot-dry-run
+        run: uv run agent-maintain --dry-run
 
-      - name: Vulnbot ship
+      - name: Agent-maintain ship
         if: inputs.mode == 'ship'
         working-directory: ${{ runner.temp }}/ai-devsecops-cursor
         env:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
-        run: uv run vulnbot-ship --yes
+        run: uv run agent-maintain

@@ -4,13 +4,15 @@
 #
 # Repo secrets:
 #   CURSOR_API_KEY — Cursor Dashboard → Integrations
-#   REVIEWBOT_GH_TOKEN — classic PAT (`repo`) for GraphQL resolveReviewThread only.
+#   AGENT_GH_TOKEN — optional classic PAT (`repo`) for GraphQL resolveReviewThread.
+#     Legacy secret name REVIEWBOT_GH_TOKEN is still accepted.
 #     Keep GH_TOKEN as github.token so reviews stay as github-actions[bot].
 #
 # Repo variables:
 #   CURSOR_AGENT_MODEL — preferred (e.g. composer-2.5)
-#   CURSOR_REV_MODEL — temporary fallback if CURSOR_AGENT_MODEL is unset
-#   DEPBOT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main)
+#   CURSOR_REV_MODEL / CURSOR_VUL_MODEL — fallbacks if unset
+#   AGENT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main);
+#     legacy DEPBOT_RUNNER_REF is still accepted
 #
 # Repo Settings → Actions → General → Workflow permissions:
 #   - ✅ Allow GitHub Actions to create and approve pull requests
@@ -48,9 +50,10 @@ jobs:
     timeout-minutes: 90
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL != '' && vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL }}
+      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
       GH_TOKEN: ${{ github.token }}
-      REVIEWBOT_GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN }}
+      AGENT_GH_TOKEN: ${{ secrets.AGENT_GH_TOKEN || secrets.REVIEWBOT_GH_TOKEN }}
+      REVIEWBOT_GH_TOKEN: ${{ secrets.AGENT_GH_TOKEN || secrets.REVIEWBOT_GH_TOKEN }}
     steps:
       - name: Check secrets and vars
         run: |
@@ -60,7 +63,7 @@ jobs:
             exit 1
           fi
           if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_AGENT_MODEL (or CURSOR_REV_MODEL fallback)"
+            echo "::error::Missing variable CURSOR_AGENT_MODEL (or REV/VUL fallback)"
             exit 1
           fi
           if [ -z "${{ inputs.pr }}" ]; then
@@ -82,7 +85,7 @@ jobs:
 
       - name: Install agent runner
         env:
-          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || vars.DEPBOT_RUNNER_REF || 'main' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
@@ -98,7 +101,6 @@ jobs:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
           AGENT_PR: ${{ inputs.pr }}
-          REVIEWBOT_PR: ${{ inputs.pr }}
         run: uv run agent-gate --pr "$AGENT_PR" --dry-run
 
       - name: Agent-gate ship
@@ -108,5 +110,4 @@ jobs:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
           AGENT_PR: ${{ inputs.pr }}
-          REVIEWBOT_PR: ${{ inputs.pr }}
         run: uv run agent-gate --pr "$AGENT_PR"

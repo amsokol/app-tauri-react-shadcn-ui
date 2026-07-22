@@ -1,7 +1,7 @@
 name: Setup toolchain
 description: >-
   Install Linux Tauri deps (when on Linux), pnpm, Node (.nvmrc), Rust 1.97,
-  and Rust build cache — shared by CI and depbot.
+  and Rust build cache — shared by CI and agent workflows.
 
 runs:
   using: composite

@@ -46,8 +46,8 @@ jobs:
       - name: Frontend build
         run: pnpm build
 
-  vulnbot:
-    name: Vulnbot ship (CI gate)
+  agent-maintain:
+    name: Agent maintain (main)
     # Issues/reconcile against default branch only — avoid PR-branch noise.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
@@ -58,11 +58,11 @@ jobs:
       issues: write
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_VUL_MODEL: ${{ vars.CURSOR_VUL_MODEL }}
+      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
       GH_TOKEN: ${{ github.token }}
-      GIT_AUTHOR_NAME: vulnbot
+      GIT_AUTHOR_NAME: agent
       GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-      GIT_COMMITTER_NAME: vulnbot
+      GIT_COMMITTER_NAME: agent
       GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
     steps:
       - name: Check secrets and vars
@@ -72,11 +72,11 @@ jobs:
             echo "::error::Missing secret CURSOR_API_KEY"
             exit 1
           fi
-          if [ -z "${CURSOR_VUL_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_VUL_MODEL"
+          if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
+            echo "::error::Missing variable CURSOR_AGENT_MODEL (or REV/VUL fallback)"
             exit 1
           fi
-          echo "CURSOR_VUL_MODEL=$CURSOR_VUL_MODEL"
+          echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL"
 
       - name: Checkout
         uses: actions/checkout@v5
@@ -101,9 +101,9 @@ jobs:
         with:
           enable-cache: false
 
-      - name: Install vulnbot runner
+      - name: Install agent runner
         env:
-          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || vars.DEPBOT_RUNNER_REF || 'main' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
@@ -112,12 +112,12 @@ jobs:
           cd "${{ runner.temp }}/ai-devsecops-cursor"
           uv sync --frozen
 
-      - name: Vulnbot ship
+      - name: Agent-maintain ship
         working-directory: ${{ runner.temp }}/ai-devsecops-cursor
         env:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
-        run: uv run vulnbot-ship --yes
+        run: uv run agent-maintain
 
   agent-gate:
     name: Agent gate (PR review)
@@ -131,13 +131,12 @@ jobs:
       pull-requests: write
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL != '' && vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL }}
+      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
       # Reviews/APPROVE as github-actions[bot]. Do NOT replace with a user PAT.
       GH_TOKEN: ${{ github.token }}
-      # Classic PAT (repo) for GraphQL resolveReviewThread only.
-      REVIEWBOT_GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN }}
+      AGENT_GH_TOKEN: ${{ secrets.AGENT_GH_TOKEN || secrets.REVIEWBOT_GH_TOKEN }}
+      REVIEWBOT_GH_TOKEN: ${{ secrets.AGENT_GH_TOKEN || secrets.REVIEWBOT_GH_TOKEN }}
       AGENT_PR: ${{ github.event.pull_request.number }}
-      REVIEWBOT_PR: ${{ github.event.pull_request.number }}
     steps:
       - name: Check secrets and vars
         run: |
@@ -147,7 +146,7 @@ jobs:
             exit 1
           fi
           if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_AGENT_MODEL (or CURSOR_REV_MODEL fallback)"
+            echo "::error::Missing variable CURSOR_AGENT_MODEL (or REV/VUL fallback)"
             exit 1
           fi
           echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL AGENT_PR=$AGENT_PR"
@@ -165,7 +164,7 @@ jobs:
 
       - name: Install agent runner
         env:
-          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || vars.DEPBOT_RUNNER_REF || 'main' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
@@ -180,5 +179,4 @@ jobs:
           DEPBOT_TARGET: ${{ github.workspace }}
           TARGET_ID: ${{ github.repository }}
           AGENT_PR: ${{ github.event.pull_request.number }}
-          REVIEWBOT_PR: ${{ github.event.pull_request.number }}
         run: uv run agent-gate --pr "$AGENT_PR"
