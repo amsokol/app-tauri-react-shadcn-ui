@@ -58,7 +58,8 @@ jobs:
       issues: write
     env:
       CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
+      AGENT_MAINTAIN_MODEL: ${{ vars.AGENT_MAINTAIN_MODEL || vars.CURSOR_AGENT_MODEL }}
+      AGENT_SCM: github
       GH_TOKEN: ${{ github.token }}
       GIT_AUTHOR_NAME: agent
       GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
@@ -72,15 +73,16 @@ jobs:
             echo "::error::Missing secret CURSOR_API_KEY"
             exit 1
           fi
-          if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_AGENT_MODEL (or REV/VUL fallback)"
+          if [ -z "${AGENT_MAINTAIN_MODEL:-}" ]; then
+            echo "::error::Missing variable AGENT_MAINTAIN_MODEL (or CURSOR_AGENT_MODEL)"
             exit 1
           fi
-          echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL"
+          echo "AGENT_MAINTAIN_MODEL=$AGENT_MAINTAIN_MODEL"
 
       - name: Checkout
         uses: actions/checkout@v5
         with:
+          submodules: true
           fetch-depth: 0
           token: ${{ github.token }}
 
@@ -103,7 +105,7 @@ jobs:
 
       - name: Install agent runner
         env:
-          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || vars.DEPBOT_RUNNER_REF || 'main' }}
+          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || 'main' }}
         run: |
           set -euo pipefail
           git clone --depth 1 --branch "$RUNNER_REF" \
@@ -115,68 +117,6 @@ jobs:
       - name: Agent-maintain ship
         working-directory: ${{ runner.temp }}/ai-devsecops-cursor
         env:
-          DEPBOT_TARGET: ${{ github.workspace }}
-          TARGET_ID: ${{ github.repository }}
+          TARGET_PATH: ${{ github.workspace }}
+          TARGET_ID: app-tauri-react-shadcn-ui
         run: uv run agent-maintain
-
-  agent-gate:
-    name: Agent gate (PR review)
-    if: >
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-24.04
-    timeout-minutes: 90
-    permissions:
-      contents: read
-      pull-requests: write
-    env:
-      CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
-      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL || vars.CURSOR_VUL_MODEL }}
-      # Reviews/APPROVE as github-actions[bot]. Do NOT replace with a user PAT.
-      GH_TOKEN: ${{ github.token }}
-      AGENT_GH_TOKEN: ${{ secrets.AGENT_GH_TOKEN || secrets.REVIEWBOT_GH_TOKEN }}
-      REVIEWBOT_GH_TOKEN: ${{ secrets.AGENT_GH_TOKEN || secrets.REVIEWBOT_GH_TOKEN }}
-      AGENT_PR: ${{ github.event.pull_request.number }}
-    steps:
-      - name: Check secrets and vars
-        run: |
-          set -euo pipefail
-          if [ -z "${CURSOR_API_KEY:-}" ]; then
-            echo "::error::Missing secret CURSOR_API_KEY"
-            exit 1
-          fi
-          if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
-            echo "::error::Missing variable CURSOR_AGENT_MODEL (or REV/VUL fallback)"
-            exit 1
-          fi
-          echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL AGENT_PR=$AGENT_PR"
-
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          token: ${{ github.token }}
-
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: false
-
-      - name: Install agent runner
-        env:
-          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || vars.DEPBOT_RUNNER_REF || 'main' }}
-        run: |
-          set -euo pipefail
-          git clone --depth 1 --branch "$RUNNER_REF" \
-            https://github.com/amsokol/ai-devsecops-cursor.git \
-            "${{ runner.temp }}/ai-devsecops-cursor"
-          cd "${{ runner.temp }}/ai-devsecops-cursor"
-          uv sync --frozen
-
-      - name: Agent-gate ship
-        working-directory: ${{ runner.temp }}/ai-devsecops-cursor
-        env:
-          DEPBOT_TARGET: ${{ github.workspace }}
-          TARGET_ID: ${{ github.repository }}
-          AGENT_PR: ${{ github.event.pull_request.number }}
-        run: uv run agent-gate --pr "$AGENT_PR"
