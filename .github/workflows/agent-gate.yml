@@ -1,0 +1,112 @@
+# Manual PR gate via Cursor Agent SDK (agent-gate / pr_gate).
+# Also runs automatically on pull_request in ci.yml (ship → review / APPROVE).
+# Trigger: Actions → agent-gate → Run workflow (dry-run | ship + PR number).
+#
+# Repo secrets:
+#   CURSOR_API_KEY — Cursor Dashboard → Integrations
+#   REVIEWBOT_GH_TOKEN — classic PAT (`repo`) for GraphQL resolveReviewThread only.
+#     Keep GH_TOKEN as github.token so reviews stay as github-actions[bot].
+#
+# Repo variables:
+#   CURSOR_AGENT_MODEL — preferred (e.g. composer-2.5)
+#   CURSOR_REV_MODEL — temporary fallback if CURSOR_AGENT_MODEL is unset
+#   DEPBOT_RUNNER_REF — optional git ref of amsokol/ai-devsecops-cursor (default: main)
+#
+# Repo Settings → Actions → General → Workflow permissions:
+#   - ✅ Allow GitHub Actions to create and approve pull requests
+#     (required for APPROVE)
+
+name: agent-gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run (plan only) or ship (post review / APPROVE)"
+        required: true
+        type: choice
+        options:
+          - dry-run
+          - ship
+        default: dry-run
+      pr:
+        description: "Pull request number"
+        required: true
+        type: string
+
+concurrency:
+  group: agent-gate-${{ inputs.pr }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  agent-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+      CURSOR_AGENT_MODEL: ${{ vars.CURSOR_AGENT_MODEL != '' && vars.CURSOR_AGENT_MODEL || vars.CURSOR_REV_MODEL }}
+      GH_TOKEN: ${{ github.token }}
+      REVIEWBOT_GH_TOKEN: ${{ secrets.REVIEWBOT_GH_TOKEN }}
+    steps:
+      - name: Check secrets and vars
+        run: |
+          set -euo pipefail
+          if [ -z "${CURSOR_API_KEY:-}" ]; then
+            echo "::error::Missing secret CURSOR_API_KEY"
+            exit 1
+          fi
+          if [ -z "${CURSOR_AGENT_MODEL:-}" ]; then
+            echo "::error::Missing variable CURSOR_AGENT_MODEL (or CURSOR_REV_MODEL fallback)"
+            exit 1
+          fi
+          if [ -z "${{ inputs.pr }}" ]; then
+            echo "::error::Missing PR number"
+            exit 1
+          fi
+          echo "CURSOR_AGENT_MODEL=$CURSOR_AGENT_MODEL pr=${{ inputs.pr }}"
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ github.token }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: false
+
+      - name: Install agent runner
+        env:
+          RUNNER_REF: ${{ vars.DEPBOT_RUNNER_REF != '' && vars.DEPBOT_RUNNER_REF || 'main' }}
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch "$RUNNER_REF" \
+            https://github.com/amsokol/ai-devsecops-cursor.git \
+            "${{ runner.temp }}/ai-devsecops-cursor"
+          cd "${{ runner.temp }}/ai-devsecops-cursor"
+          uv sync --frozen
+
+      - name: Agent-gate dry-run
+        if: inputs.mode == 'dry-run'
+        working-directory: ${{ runner.temp }}/ai-devsecops-cursor
+        env:
+          DEPBOT_TARGET: ${{ github.workspace }}
+          TARGET_ID: ${{ github.repository }}
+          AGENT_PR: ${{ inputs.pr }}
+          REVIEWBOT_PR: ${{ inputs.pr }}
+        run: uv run agent-gate --pr "$AGENT_PR" --dry-run
+
+      - name: Agent-gate ship
+        if: inputs.mode == 'ship'
+        working-directory: ${{ runner.temp }}/ai-devsecops-cursor
+        env:
+          DEPBOT_TARGET: ${{ github.workspace }}
+          TARGET_ID: ${{ github.repository }}
+          AGENT_PR: ${{ inputs.pr }}
+          REVIEWBOT_PR: ${{ inputs.pr }}
+        run: uv run agent-gate --pr "$AGENT_PR"
