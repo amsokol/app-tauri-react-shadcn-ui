@@ -99,24 +99,14 @@ jobs:
       - name: Install JS dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: false
-
       - name: Install agent runner
-        env:
-          RUNNER_REF: ${{ vars.AGENT_RUNNER_REF || 'v0.3.0' }}
-        run: |
-          set -euo pipefail
-          git clone --depth 1 --branch "$RUNNER_REF" \
-            https://github.com/amsokol/ai-devsecops-cursor.git \
-            "${{ runner.temp }}/ai-devsecops-cursor"
-          cd "${{ runner.temp }}/ai-devsecops-cursor"
-          uv sync --frozen
+        id: runner
+        uses: amsokol/ai-devsecops-cursor/.github/actions/install-agent-runner@v0.3.2
+        with:
+          runner_ref: ${{ vars.AGENT_RUNNER_REF || 'v0.3.2' }}
 
       - name: Agent-maintain ship
-        working-directory: ${{ runner.temp }}/ai-devsecops-cursor
+        working-directory: ${{ steps.runner.outputs.path }}
         env:
           TARGET_PATH: ${{ github.workspace }}
           TARGET_ID: app-tauri-react-shadcn-ui
