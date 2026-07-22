@@ -27,6 +27,8 @@ From the **repo root**, after `pnpm install`:
 
 **Agent gate** (`.github/workflows/agent-gate.yml`): on PR open/sync/reopen **and** on **human** PR conversation / review-thread comments, runs `agent-gate` as `github-actions[bot]` (latest run cancels prior; bot comments do not re-trigger). **Agent maintain** on push to `main` runs `agent-maintain`. Policy overlay: `.cursor/agent/` + skills submodule `.cursor/agent/library` ([ai-devsecops-skills](https://github.com/amsokol/ai-devsecops-skills) @ `v0.1.3`).
 
+**Merge to `main`:** ruleset requires green **Agent gate (PR review)** status check (not a GitHub APPROVE event — the bot cannot APPROVE its own maintain PRs).
+
 **In the editor:** this repo includes `.vscode/settings.json` (workspace-only) so **Prettier formats on save** and **ESLint can fix issues on save** while this folder is open. Install the **recommended extensions** when prompted, or open the Extensions view and accept the suggestions from `.vscode/extensions.json` (Prettier, ESLint, Stylelint, Markdownlint).
 
 Rust formatting in the IDE is usually handled by **rust-analyzer** (“Format Document”) using **`rustfmt`**; CLI checks use the scripts above.
