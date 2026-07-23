@@ -25,7 +25,7 @@ From the **repo root**, after `pnpm install`:
 
 **CI:** GitHub Actions (`.github/workflows/ci.yml`) runs `format:check`, `lint:all`, `typecheck`, `security:audit` (non-blocking while transitive advisories remain), and `pnpm build` on **Ubuntu**, **macOS**, and **Windows** for pushes and pull requests to `main`.
 
-**Agent gate** (`.github/workflows/agent-gate.yml`): on PR open/sync/reopen **and** on **human** PR conversation / review-thread comments, runs `agent-gate` as `github-actions[bot]` (latest run cancels prior; bot comments do not re-trigger). **Agent maintain** on push to `main` runs `agent-maintain`. Runner pin: `uses: …@v0.3.5` → [ai-devsecops-cursor](https://github.com/amsokol/ai-devsecops-cursor). Policy overlay: `.cursor/agent/` + skills submodule `.cursor/agent/library` ([ai-devsecops-skills](https://github.com/amsokol/ai-devsecops-skills) @ `v0.1.10`).
+**Agent gate** (`.github/workflows/agent-gate.yml`): on PR open/sync/reopen **and** on **human** PR conversation / review-thread comments, runs `agent-gate` as `github-actions[bot]` (latest run cancels prior; bot comments do not re-trigger). **Agent maintain** on push to `main` runs `agent-maintain`. Runner pin: `uses: …@v0.3.6` → [ai-devsecops-cursor](https://github.com/amsokol/ai-devsecops-cursor). Policy overlay: `.cursor/agent/` + skills submodule `.cursor/agent/library` ([ai-devsecops-skills](https://github.com/amsokol/ai-devsecops-skills) @ `v0.1.10`).
 
 **Merge to `main`:** ruleset requires green **Agent gate (PR review)** status check (not a GitHub APPROVE event — the bot cannot APPROVE its own maintain PRs).
 
