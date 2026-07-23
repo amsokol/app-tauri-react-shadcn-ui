@@ -1,7 +1,7 @@
 # Maintain via Cursor Agent SDK (agent-maintain / main_maintain).
 # Product toolchain stays here; runner install is shared composite.
 #
-# Also on push to main via ci.yml (ship).
+# Triggers: workflow_dispatch + issue-wake only (no push-to-main).
 
 name: agent-maintain
 
