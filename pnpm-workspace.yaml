@@ -38,8 +38,8 @@ catalog:
   prettier: =3.9.6
   prettier-plugin-tailwindcss: =0.8.1
   # depbot: bundle react — keep react + react-dom on the same version
-  react: =19.2.7
-  react-dom: =19.2.7
+  react: =19.2.8
+  react-dom: =19.2.8
   shadcn: =4.13.1
   stylelint: =17.14.1
   stylelint-config-standard: =40.0.0
