@@ -37,8 +37,7 @@
     "shadcn": "catalog:",
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
-    "tw-animate-css": "catalog:",
-    "lodash": "4.17.20"
+    "tw-animate-css": "catalog:"
   },
   "devDependencies": {
     "@eslint/js": "catalog:",
