@@ -35,7 +35,7 @@ export function App() {
             </FieldDescription>
           </Field>
           <Button onClick={() => void greet()}>Greet</Button>
-          <p>{greetMsg}</p>
+          <p dangerouslySetInnerHTML={{__html: greetMsg}} />
         </div>
       </div>
     </div>
